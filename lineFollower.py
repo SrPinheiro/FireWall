@@ -1,3 +1,4 @@
+#!/usr/bin/env pybricks-micropython
 def seguir_linha(drive_base, sensor_cor_esquerdo, sensor_cor_direito, ev3=null):
     cor_alvo = Color.BLACK
     velocidade_maxima = 300
