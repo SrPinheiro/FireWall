@@ -16,20 +16,15 @@ try:
     while True:
         leftReflection = int(sensor_cor_esquerdo.reflection())
         rightReflection = int(sensor_cor_direito.reflection())
-        
-        ev3.screen.clear()
-        ev3.screen.print(rightReflection, leftReflection)
-        
-        wait(1000)
-        
         leftColor = sensor_cor_esquerdo.color()
         rightColor = sensor_cor_direito.color()
         
-
         ev3.screen.clear()
+        ev3.screen.print(rightReflection, leftReflection)
         ev3.screen.print(rightColor)
         ev3.screen.print(leftColor)
-        wait(500)
+        
+        wait(1000)
     
 except Exception as err:
     ev3.screen.print(err)
