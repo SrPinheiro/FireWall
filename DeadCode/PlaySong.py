@@ -1,3 +1,5 @@
+#!/usr/bin/env pybricks-micropython
+
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, Speaker
 from pybricks.media.ev3dev import Image, SoundFile
