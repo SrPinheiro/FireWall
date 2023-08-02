@@ -17,35 +17,35 @@ class LineFollower:
         
         self.maxSpeed = 90
         self.normalSpeed = 70
-        self.minSpeed = 50
         self.turnAngle = 270
         self.blackReflection = 40
+        
+        self.lineReflection = 5
+        self.whiteReflection = 50
         
         self.brain.speaker.beep()
         self.brain.screen.clear()
         self.brain.screen.print("Line Follower instantiated")
-        wait(2000)
 
     def run(self):
         self.brain.speaker.beep()
         
         while True:
             sensorInformation = self.getLightInformation()
+            leftCorrection = 0
+            rightCorretion = 0
             
             if(sensorInformation["LColor"] == Color.GREEN or sensorInformation["RColor"] == Color.GREEN):
                 self.GreenState()
+            
+            elif( not (sensorInformation["LReflection"] < self.blackReflection and sensorInformation["RReflection"] < self.blackReflection)):
+                leftCorrection = sensorInformation["LReflection"] - self.lineReflection
+                rightCorretion = sensorInformation["RReflection"] - self.lineReflection
                 
-            elif(sensorInformation["LReflection"] < self.blackReflection and sensorInformation["RReflection"] < self.blackReflection):
-                self.drive(0)
-                
-            elif(sensorInformation["LReflection"] >= self.blackReflection and sensorInformation["RReflection"] >= self.blackReflection):
-                self.drive(0)
-                
-            elif(sensorInformation["LReflection"] < self.blackReflection):
-                self.drive(self.getTurnAngle(sensorInformation["LReflection"]) * - 1)
-                
-            elif(sensorInformation["RReflection"] < self.blackReflection):
-                self.drive(self.getTurnAngle(sensorInformation["LReflection"]))           
+            correction = leftCorrection - rightCorretion           
+            
+            self.drive(correction)
+            wait(10)
             
                         
     def GreenState(self):
