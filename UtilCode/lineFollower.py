@@ -36,29 +36,23 @@ class LineFollower:
                 self.GreenState()
                 
             elif(sensorInformation["LReflection"] < self.blackReflection and sensorInformation["RReflection"] < self.blackReflection):
-                self.motor.drive(self.normalSpeed, 0)
+                self.drive(0)
                 
             elif(sensorInformation["LReflection"] >= self.blackReflection and sensorInformation["RReflection"] >= self.blackReflection):
-                self.motor.drive(self.maxSpeed, 0)
+                self.drive(0)
                 
             elif(sensorInformation["LReflection"] < self.blackReflection):
-                self.motor.drive(self.normalSpeed, self.getTurnAngle(sensorInformation["LReflection"]) * - 1)
+                self.drive(self.getTurnAngle(sensorInformation["LReflection"]) * - 1)
                 
             elif(sensorInformation["RReflection"] < self.blackReflection):
-                self.motor.drive(self.normalSpeed, self.getTurnAngle(sensorInformation["LReflection"]))
+                self.drive(self.getTurnAngle(sensorInformation["LReflection"]))           
             
-            # self.brain.speaker.beep()
-            # self.brain.screen.clear()
-            # self.brain.screen.print("Line Follower")
-            # self.brain.screen.print(sensorInformation["LReflection"], sensorInformation["RReflection"])
-            # self.brain.screen.print(sensorInformation["LColor"])
-            # self.brain.screen.print(sensorInformation["RColor"])
                         
     def GreenState(self):
         self.brain.speaker.beep()
         self.brain.screen.clear()
         self.brain.screen.print("Green State")
-        self.motor.drive(0,0)
+        self.drive(0)
         wait(2000)
         pass
     
@@ -91,6 +85,9 @@ class LineFollower:
             angle *= 0.5
             
         return angle
+    
+    def drive(self, angle, speed=self.normalSpeed):
+        self.drive(speed, angle)
     
 if __name__ == "__main__":
     robotBrain = LineFollower()
