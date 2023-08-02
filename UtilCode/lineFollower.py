@@ -12,47 +12,61 @@ class LineFollower:
         
         self.RColorSensor = ColorSensor(Port.S1)
         self.LColorSensor = ColorSensor(Port.S2)
+        
+        self.LMotor = Motor(Port.B)
+        self.RMotor = Motor(Port.A)
 
-        self.motor = DriveBase(left_motor=Motor(Port.B), right_motor=Motor(Port.A), wheel_diameter=55.5, axle_track=104)
+        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=55.5, axle_track=104)
         
         self.maxSpeed = 90
-        self.normalSpeed = 70
+        self.normalSpeed = 10
         self.turnAngle = 270
-        self.blackReflection = 40
+        self.blackReflection = 30
         
-        self.lineReflection = 5
-        self.whiteReflection = 50
+        self.lineReflection = 10
+        self.whiteReflection = 40
         
-        self.brain.speaker.beep()
+        # self.brain.speaker.beep()
         self.brain.screen.clear()
         self.brain.screen.print("Line Follower instantiated")
 
     def run(self):
-        self.brain.speaker.beep()
+        # self.brain.speaker.beep()
         
         while True:
             sensorInformation = self.getLightInformation()
             leftCorrection = 0
-            rightCorretion = 0
+            rightCorrection = 0
             
             if(sensorInformation["LColor"] == Color.GREEN or sensorInformation["RColor"] == Color.GREEN):
                 self.GreenState()
             
-            elif( not (sensorInformation["LReflection"] < self.blackReflection and sensorInformation["RReflection"] < self.blackReflection)):
-                leftCorrection = sensorInformation["LReflection"] - self.lineReflection
-                rightCorretion = sensorInformation["RReflection"] - self.lineReflection
+            leftCorrection = sensorInformation["LReflection"] - self.lineReflection
+            rightCorrection = sensorInformation["RReflection"] - self.lineReflection
                 
-            correction = leftCorrection - rightCorretion           
+            self.brain.screen.clear()
+            self.brain.screen.print(leftCorrection)
+            self.brain.screen.print(rightCorrection)
             
-            self.drive(correction)
+            if (sensorInformation["LReflection"] > self.blackReflection and sensorInformation["RReflection"] < self.blackReflection):                
+                self.LMotor.run(self.normalSpeed + leftCorrection ** 1.3)
+                
+            elif (sensorInformation["RReflection"] > self.blackReflection and sensorInformation["LReflection"] < self.blackReflection):
+                self.RMotor.run(self.normalSpeed + rightCorrection * 1.3)
+                
+            else:
+                self.LMotor.run(int(leftCorrection ** 1.3))
+                self.RMotor.run(int(rightCorrection ** 1.3))
+                
+                
             wait(10)
             
                         
     def GreenState(self):
-        self.brain.speaker.beep()
+        # self.brain.speaker.beep()
         self.brain.screen.clear()
         self.brain.screen.print("Green State")
-        self.drive(0)
+        # self.drive(0)
         wait(2000)
         pass
     
@@ -86,8 +100,8 @@ class LineFollower:
             
         return angle
     
-    def drive(self, angle, speed=self.normalSpeed):
-        self.drive(speed, angle)
+    def drive(self, angle, speed):
+        self.motor.drive(speed, angle)
     
 if __name__ == "__main__":
     robotBrain = LineFollower()
