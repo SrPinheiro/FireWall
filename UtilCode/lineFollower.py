@@ -5,6 +5,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+from greenState import GreenState
 
 class LineFollower:
     def __init__(self):
@@ -17,6 +18,8 @@ class LineFollower:
         self.RMotor = Motor(Port.A)
 
         self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=55.5, axle_track=104)
+        
+        self.ultraSonic =  UltrasonicSensor(Port.S3)
         
         self.maxSpeed = 120
         self.normalSpeed = 50
@@ -32,6 +35,7 @@ class LineFollower:
         
         while True:
             sensorInformation = self.getLightInformation()
+            distance = self.ultraSonic.distance()
             
             
             if(sensorInformation["LColor"] == Color.GREEN or sensorInformation["RColor"] == Color.GREEN):
@@ -69,50 +73,9 @@ class LineFollower:
             wait(50)
                  
     def greenState(self):
-        self.motor.drive(0,0)
-        L = False
-        R = False
+        green = GreenState()
+        green.run()
         
-        colorData = self.getLightInformation()
-        if(colorData["LColor"] == Color.GREEN):
-            L = True
-
-        if(colorData["RColor"] == Color.GREEN):
-            R = True
-
-        self.motor.turn(40)
-        wait(1000)
-        
-        colorData = self.getLightInformation()
-        if(colorData["LColor"] == Color.GREEN):
-            L = True
-            
-        if(colorData["RColor"] == Color.GREEN):
-            R = True
-            
-        self.motor.turn(-40)
-        self.motor.turn(-40)
-        wait(1000)
-        colorData = self.getLightInformation()
-        if(colorData["LColor"] == Color.GREEN):
-            L = True
-
-        if(colorData["RColor"] == Color.GREEN):
-            R = True
-            
-        self.motor.turn(40)
-        
-        self.brain.screen.clear()
-        if(L and R):
-            self.brain.screen.print("IR RETOO")
-        elif(L):
-            self.brain.screen.print("IR ISQUERDA")
-        elif(R):
-            self.brain.screen.print("IR DIREITA")
-        else:
-            self.brain.screen.print("IR RETOO")
-        
-        wait(10000)
     
     def passObstacle(self):
         self.brain.speaker.beep()

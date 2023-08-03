@@ -14,17 +14,27 @@ ev3 = EV3Brick()
 
 try:
     while True:
-        leftReflection = int(sensor_cor_esquerdo.reflection())
-        rightReflection = int(sensor_cor_direito.reflection())
-        leftColor = sensor_cor_esquerdo.color()
-        rightColor = sensor_cor_direito.color()
+        LReflection = sensor_cor_esquerdo.reflection()
+        RReflection = sensor_cor_direito.reflection()
+        LColor = sensor_cor_esquerdo.color()
+        RColor = sensor_cor_direito.color()
+        LAmbient = sensor_cor_esquerdo.ambient()
+        RAmbient = sensor_cor_direito.ambient()
+        RRGB = sensor_cor_direito.rgb()
+        LRGG = sensor_cor_esquerdo.rgb()
         
         ev3.screen.clear()
-        ev3.screen.print(rightReflection, leftReflection)
-        ev3.screen.print(rightColor)
-        ev3.screen.print(leftColor)
+        ev3.screen.print(RReflection + " - " + LReflection)
+        ev3.screen.print(RColor)
+        ev3.screen.print(LColor)
         
-        wait(1000)
+        wait(3000)
+        ev3.screen.clear()
+        ev3.screen.print(LAmbient + " - " + RAmbient)
+        ev3.screen.print(RRGB)
+        ev3.screen.print(LRGG)
+        
+        wait(3000)
     
 except Exception as err:
     ev3.screen.print(err)
