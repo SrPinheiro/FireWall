@@ -18,57 +18,101 @@ class LineFollower:
 
         self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=55.5, axle_track=104)
         
-        self.maxSpeed = 90
-        self.normalSpeed = 10
-        self.turnAngle = 270
+        self.maxSpeed = 120
+        self.normalSpeed = 50
         self.blackReflection = 30
         
         self.lineReflection = 10
         self.whiteReflection = 40
         
-        # self.brain.speaker.beep()
         self.brain.screen.clear()
         self.brain.screen.print("Line Follower instantiated")
 
     def run(self):
-        # self.brain.speaker.beep()
         
         while True:
             sensorInformation = self.getLightInformation()
-            leftCorrection = 0
-            rightCorrection = 0
+            
             
             if(sensorInformation["LColor"] == Color.GREEN or sensorInformation["RColor"] == Color.GREEN):
-                self.GreenState()
+                self.motor.drive(0,0)
+                self.greenState()
             
-            leftCorrection = sensorInformation["LReflection"] - self.lineReflection
-            rightCorrection = sensorInformation["RReflection"] - self.lineReflection
+            if(sensorInformation["LColor"] == Color.BLACK or sensorInformation["RColor"] == Color.BLACK):
+                self.makeTurn()
                 
-            self.brain.screen.clear()
-            self.brain.screen.print(leftCorrection)
-            self.brain.screen.print(rightCorrection)
-            
-            if (sensorInformation["LReflection"] > self.blackReflection and sensorInformation["RReflection"] < self.blackReflection):                
-                self.LMotor.run(self.normalSpeed + leftCorrection ** 1.3)
-                
-            elif (sensorInformation["RReflection"] > self.blackReflection and sensorInformation["LReflection"] < self.blackReflection):
-                self.RMotor.run(self.normalSpeed + rightCorrection * 1.3)
-                
-            else:
-                self.LMotor.run(int(leftCorrection ** 1.3))
-                self.RMotor.run(int(rightCorrection ** 1.3))
-                
-                
+            self.motor.drive(self.maxSpeed, 0)
+
             wait(10)
             
-                        
-    def GreenState(self):
-        # self.brain.speaker.beep()
+    def makeTurn(self):        
+        while True:
+            R = self.RColorSensor.color()
+            L = self.LColorSensor.color()
+            
+            if(R == Color.BLACK and L == Color.BLACK):
+                self.motor.drive(self.maxSpeed, 0)
+                
+            elif(R == Color.GREEN or L == Color.GREEN):
+                self.greenState()
+                break
+                
+            elif(R == Color.WHITE and L == Color.WHITE):
+                break
+            
+            elif(R == Color.BLACK and L == Color.WHITE):
+                self.motor.drive(self.normalSpeed, 150)
+                
+            elif (R == Color.WHITE and L == Color.BLACK):
+                self.motor.drive(self.normalSpeed, -150)
+                
+            wait(50)
+                 
+    def greenState(self):
+        self.motor.drive(0,0)
+        L = False
+        R = False
+        
+        colorData = self.getLightInformation()
+        if(colorData["LColor"] == Color.GREEN):
+            L = True
+
+        if(colorData["RColor"] == Color.GREEN):
+            R = True
+
+        self.motor.turn(40)
+        wait(1000)
+        
+        colorData = self.getLightInformation()
+        if(colorData["LColor"] == Color.GREEN):
+            L = True
+            
+        if(colorData["RColor"] == Color.GREEN):
+            R = True
+            
+        self.motor.turn(-40)
+        self.motor.turn(-40)
+        wait(1000)
+        colorData = self.getLightInformation()
+        if(colorData["LColor"] == Color.GREEN):
+            L = True
+
+        if(colorData["RColor"] == Color.GREEN):
+            R = True
+            
+        self.motor.turn(40)
+        
         self.brain.screen.clear()
-        self.brain.screen.print("Green State")
-        # self.drive(0)
-        wait(2000)
-        pass
+        if(L and R):
+            self.brain.screen.print("IR RETOO")
+        elif(L):
+            self.brain.screen.print("IR ISQUERDA")
+        elif(R):
+            self.brain.screen.print("IR DIREITA")
+        else:
+            self.brain.screen.print("IR RETOO")
+        
+        wait(10000)
     
     def passObstacle(self):
         self.brain.speaker.beep()
@@ -77,17 +121,11 @@ class LineFollower:
         wait(2000)
         pass
     
-    def getLightInformation(self):
-        
-        LReflection = int(self.LColorSensor.reflection())
-        RReflection = int(self.RColorSensor.reflection())
-        
+    def getLightInformation(self):        
         LColor = self.LColorSensor.color()
         RColor = self.RColorSensor.color()
         
         return {
-            "LReflection": LReflection,
-            "RReflection": RReflection,
             "LColor": LColor,
             "RColor": RColor
         }
