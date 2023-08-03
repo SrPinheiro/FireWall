@@ -16,21 +16,24 @@ try:
     while True:
         LReflection = sensor_cor_esquerdo.reflection()
         RReflection = sensor_cor_direito.reflection()
+        
         LColor = sensor_cor_esquerdo.color()
         RColor = sensor_cor_direito.color()
+        
         LAmbient = sensor_cor_esquerdo.ambient()
         RAmbient = sensor_cor_direito.ambient()
-        RRGB = sensor_cor_direito.rgb()
+        
         LRGG = sensor_cor_esquerdo.rgb()
+        RRGB = sensor_cor_direito.rgb()
         
         ev3.screen.clear()
-        ev3.screen.print(RReflection + " - " + LReflection)
+        ev3.screen.print(str(RReflection) + " - " + str(LReflection))
         ev3.screen.print(RColor)
         ev3.screen.print(LColor)
         
         wait(3000)
         ev3.screen.clear()
-        ev3.screen.print(LAmbient + " - " + RAmbient)
+        ev3.screen.print(str(LAmbient) + " - " + str(RAmbient))
         ev3.screen.print(RRGB)
         ev3.screen.print(LRGG)
         

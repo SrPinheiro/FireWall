@@ -6,14 +6,16 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from greenState import GreenState
+from colorCheck import ColorCheck
 
 class LineFollower:
     def __init__(self):
         self.brain = EV3Brick()
         
-        self.RColorSensor = ColorSensor(Port.S1)
-        self.LColorSensor = ColorSensor(Port.S2)
-        
+        self.RColorSensor = ColorSensor(Port.S2)
+        self.LColorSensor = ColorSensor(Port.S1)
+        self.color =ColorCheck()
+
         self.LMotor = Motor(Port.B)
         self.RMotor = Motor(Port.A)
 
@@ -32,17 +34,20 @@ class LineFollower:
         self.brain.screen.print("Line Follower instantiated")
 
     def run(self):
-        
         while True:
-            sensorInformation = self.getLightInformation()
+            RColor = self.color.check(self.RColorSensor)
+            LColor = self.color.check(self.LColorSensor)
+            
             distance = self.ultraSonic.distance()
             
-            
-            if(sensorInformation["LColor"] == Color.GREEN or sensorInformation["RColor"] == Color.GREEN):
+            if (distance < 100):
+                self.passObstacle()
+
+            if (LColor == Color.GREEN or RColor == Color.GREEN):
                 self.motor.drive(0,0)
                 self.greenState()
             
-            if(sensorInformation["LColor"] == Color.BLACK or sensorInformation["RColor"] == Color.BLACK):
+            if (LColor == Color.BLACK or RColor == Color.BLACK):
                 self.makeTurn()
                 
             self.motor.drive(self.maxSpeed, 0)
@@ -51,8 +56,8 @@ class LineFollower:
             
     def makeTurn(self):        
         while True:
-            R = self.RColorSensor.color()
-            L = self.LColorSensor.color()
+            R = self.color.check(self.RColorSensor)
+            L = self.color.check(self.LColorSensor)
             
             if(R == Color.BLACK and L == Color.BLACK):
                 self.motor.drive(self.maxSpeed, 0)
@@ -78,29 +83,13 @@ class LineFollower:
         
     
     def passObstacle(self):
+        self.motor.drive(0,0)
         self.brain.speaker.beep()
-        self.brain.screen.clear()
-        self.brain.screen.print("Pass Obstacle")
         wait(2000)
-        pass
-    
-    def getLightInformation(self):        
-        LColor = self.LColorSensor.color()
-        RColor = self.RColorSensor.color()
         
-        return {
-            "LColor": LColor,
-            "RColor": RColor
-        }
-
-    def getTurnAngle(self, value):
-        angle = self.turnAngle - value
-        
-        if (angle > 35):
-            angle *= 0.5
-            
-        return angle
-    
+        self.motor.turn(90)
+        self.motor.s
+   
     def drive(self, angle, speed):
         self.motor.drive(speed, angle)
     
