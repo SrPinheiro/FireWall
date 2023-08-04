@@ -2,11 +2,11 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
                                  InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
-from pybricks.tools import wait, StopWatch, DataLog
+from pybricks.tools import wait
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile
-from greenState import GreenState
-from colorCheck import ColorCheck
+
+from UtilCode.colorCheck import ColorCheck
+from UtilCode.greenState import GreenState
 
 class LineFollower:
     def __init__(self):
@@ -18,18 +18,19 @@ class LineFollower:
         self.LMotor = Motor(Port.B)
         self.RMotor = Motor(Port.A)
 
-        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=55.5, axle_track=104)
+        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=35, axle_track=210)
         
         self.ultraSonic =  UltrasonicSensor(Port.S3)
         
-        self.maxSpeed = 120
+        self.maxSpeed = 70
         self.normalSpeed = 50
         self.blackReflection = 30
         
         self.lineReflection = 10
         self.whiteReflection = 40
 
-        self.brain.clear()
+        self.brain.speaker.beep()
+        self.brain.screen.clear()
         self.brain.light.on(Color.ORANGE)
         self.brain.screen.draw_text(50, 60, "! FireWall !")
 
@@ -44,8 +45,9 @@ class LineFollower:
                 self.passObstacle()
 
             if (LColor == Color.GREEN or RColor == Color.GREEN):
-                self.motor.stop()
-                self.greenState()
+                # self.motor.stop()
+                # self.greenState()
+                "a"
             
             if (LColor == Color.BLACK or RColor == Color.BLACK):
                 self.makeTurn()
@@ -63,17 +65,17 @@ class LineFollower:
                 self.motor.drive(self.maxSpeed, 0)
                 
             elif(R == Color.GREEN or L == Color.GREEN):
-                self.greenState()
-                break
+                # self.greenState()
+                "a"
                 
             elif(R == Color.WHITE and L == Color.WHITE):
                 break
             
             elif(R == Color.BLACK and L == Color.WHITE):
-                self.motor.drive(self.normalSpeed, 150)
+                self.motor.drive(self.normalSpeed, 90)
                 
             elif (R == Color.WHITE and L == Color.BLACK):
-                self.motor.drive(self.normalSpeed, -150)
+                self.motor.drive(self.normalSpeed, -90)
                 
             wait(50)
                  
@@ -85,24 +87,24 @@ class LineFollower:
     def passObstacle(self):
         self.motor.stop()
         
-        while True:
-            self.brain.speaker.beep()
+        # while True:
+        #     self.brain.speaker.beep()
             
-            if Button.CENTER in self.brain.buttons.pressed():
-                break
+        #     if Button.CENTER in self.brain.buttons.pressed():
+        #         break
             
-            wait(100)
+        #     wait(1000)
         
         distance = self.ultraSonic.distance()
         
         if (distance < 100):
-            self.motor.straight(10 * 10 * -1)        
+            self.motor.straight((100 - distance) * -1)        
         
         self.motor.turn(90)
-        self.motor.straight(10 * 10)
+        self.motor.straight(100 * 10)
         
         self.motor.turn(-90)
-        self.motor.straight(10 * 10)
+        self.motor.straight(100 * 10)
         
         self.motor.turn(-90)
         LBlack = False
@@ -116,11 +118,11 @@ class LineFollower:
                 break
             
             elif (LS == Color.BLACK):
-                self.motor.drive(self.maxSpeed, 150)
+                self.motor.drive(self.maxSpeed, 100)
                 LBlack = True
                 
             elif (RS == Color.BLACK):
-                self.motor.drive(self.maxSpeed, -150)
+                self.motor.drive(self.maxSpeed, -100)
                 break
             else:
                 self.motor.drive(self.normalSpeed, 0)

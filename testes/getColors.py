@@ -1,7 +1,7 @@
 def getJSON():
     objeto_final = []
 
-    with open("colors", "r") as file:
+    with open("../colors", "r") as file:
         for _ in range(3):
             conteudo_json = []
             for i in range(3):

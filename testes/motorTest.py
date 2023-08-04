@@ -9,19 +9,23 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 ev3 = EV3Brick()
-motor = DriveBase(left_motor=Motor(Port.B), right_motor=Motor(Port.A), wheel_diameter=55.5, axle_track=104)
+motor = DriveBase(left_motor=Motor(Port.B), right_motor=Motor(Port.A), wheel_diameter=32.5, axle_track=180)
+
+ev3.speaker.beep()
 
 while True:
-    if Button.UP in ev3.buttons.pressed():
+    buttons = ev3.buttons.pressed()
+    if Button.UP in buttons:
         motor.drive(100, 0)
         
-    elif Button.DOWN in ev3.buttons.pressed():
+    elif Button.DOWN in buttons:
         motor.drive(-100, 0)
         
-    elif Button.LEFT in ev3.buttons.pressed():
+    elif Button.LEFT in buttons:
         motor.drive(0, 100)
         
-    elif Button.RIGHT in ev3.buttons.pressed():
+    elif Button.RIGHT in buttons:
         motor.drive(0, -100)
     else:
         motor.stop()
+    wait(50)

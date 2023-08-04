@@ -19,9 +19,11 @@ ev3 = EV3Brick()
 motor = DriveBase(
     left_motor=Motor(Port.B),
     right_motor=Motor(Port.A),
-    wheel_diameter=55.5,
-    axle_track=104,
+    wheel_diameter=35,
+    axle_track=210,
 )
+
+ev3.speaker.beep()
 
 while True:
     if Button.LEFT in ev3.buttons.pressed():

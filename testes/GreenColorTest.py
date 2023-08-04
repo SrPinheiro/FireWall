@@ -11,20 +11,20 @@ from colorCheck import ColorCheck
 
 sensorL = ColorSensor(Port.S1)
 ev3 = EV3Brick()
-color = ColorCheck()
+ev3.speaker.beep()
 
 def rgbCheck():
     # ev3.speaker.beep()
-    color = sensorL.rgb()
+    color2 = sensorL.rgb()
     
     ev3.screen.clear()
-    ev3.screen.print("R: " + str(color[0]))
-    ev3.screen.print("G: " + str(color[1]))
-    ev3.screen.print("B: " + str(color[2]))
+    ev3.screen.print("R: " + str(color2[0]))
+    ev3.screen.print("G: " + str(color2[1]))
+    ev3.screen.print("B: " + str(color2[2]))
     wait(500)
 
 def colorCheck():
-    CNAME = color.check(sensorL)
+    CNAME = ColorCheck.check(sensorL)
 
     ev3.screen.clear()
     ev3.screen.print(CNAME)

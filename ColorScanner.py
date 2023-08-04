@@ -14,9 +14,9 @@ def saveJSON(json):
     texto = ""
     
     for i in range(3):
-        texto += f'{json[i][0]}\n'
-        texto += f'{json[i][1]}\n'
-        texto += f'{json[i][2]}\n'
+        texto += str(json[i][0]) + "\n"
+        texto += str(json[i][1]) + "\n"
+        texto += str(json[i][2]) + "\n"
         texto += ' \n'
     
     with open('colors', "w") as file:
@@ -39,12 +39,13 @@ def searchColor(text):
     
     ev3.screen.clear()
     ev3.screen.print("COR ATUALIZADA!")
-    ev3.screen.print(Cor)
+    ev3.screen.print(cor)
     wait(2000)
     return(cor)
     
     
 def run():
+    ev3.speaker.beep()
     branco = searchColor("Cor BRANCA")
     preto = searchColor("Cor PRETA")
     verde = searchColor("Cor VERDE")

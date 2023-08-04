@@ -16,7 +16,7 @@ class GreenState:
         self.LMotor = Motor(Port.B)
         self.RMotor = Motor(Port.A)
 
-        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=55.5, axle_track=104)
+        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=35, axle_track=210)
         
         self.R = False
         self.L = False
@@ -53,7 +53,7 @@ class GreenState:
         
     def turn360(self):
         self.motor.turn(360)
-        break
+        
     
     def TurnLeft(self):
         pass
@@ -62,18 +62,18 @@ class GreenState:
         pass
     
     def walkStraight(self):
-        break
+        pass
             
         
     
     def checkR(self):
-        colorData = self.getLightInformation()
-        if(colorData["RColor"] == Color.GREEN):
+        colorData = self.RColorSensor.color()
+        if(colorData == Color.GREEN):
             R = True
             
     def checkL(self):
-        colorData = self.getLightInformation()
-        if(colorData["LColor"] == Color.GREEN):
+        colorData = self.LColorSensor.color()
+        if(colorData == Color.GREEN):
             L = True
         
     
