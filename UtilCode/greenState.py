@@ -52,7 +52,8 @@ class GreenState:
             self.walkStraight() #Andar em frente
         
     def turn360(self):
-        pass
+        self.motor.turn(360)
+        break
     
     def TurnLeft(self):
         pass
@@ -61,7 +62,8 @@ class GreenState:
         pass
     
     def walkStraight(self):
-        pass
+        break
+            
         
     
     def checkR(self):

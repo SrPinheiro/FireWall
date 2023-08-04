@@ -1,12 +1,12 @@
 {
 "CENTER": {
     "BRANCO": {
-        "RED": "22222",
-        "GREEN": "asdas",
+        "RED": "255",
+        "GREEN": "255",
         "BLUE": "255"
     },
     "PRETO": {
-        "RED": "0sadsasdasd",
+        "RED": "0",
         "GREEN": "0",
         "BLUE": "0"
     },

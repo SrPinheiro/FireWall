@@ -14,7 +14,6 @@ class LineFollower:
         
         self.RColorSensor = ColorSensor(Port.S2)
         self.LColorSensor = ColorSensor(Port.S1)
-        self.color =ColorCheck()
 
         self.LMotor = Motor(Port.B)
         self.RMotor = Motor(Port.A)
@@ -29,14 +28,15 @@ class LineFollower:
         
         self.lineReflection = 10
         self.whiteReflection = 40
-        
-        self.brain.screen.clear()
-        self.brain.screen.print("Line Follower instantiated")
+
+        self.brain.clear()
+        self.brain.light.on(Color.ORANGE)
+        self.brain.screen.draw_text(50, 60, "! FireWall !")
 
     def run(self):
         while True:
-            RColor = self.color.check(self.RColorSensor)
-            LColor = self.color.check(self.LColorSensor)
+            RColor = ColorCheck.check(self.RColorSensor)
+            LColor = ColorCheck.check(self.LColorSensor)
             
             distance = self.ultraSonic.distance()
             
@@ -44,7 +44,7 @@ class LineFollower:
                 self.passObstacle()
 
             if (LColor == Color.GREEN or RColor == Color.GREEN):
-                self.motor.drive(0,0)
+                self.motor.stop()
                 self.greenState()
             
             if (LColor == Color.BLACK or RColor == Color.BLACK):
@@ -56,8 +56,8 @@ class LineFollower:
             
     def makeTurn(self):        
         while True:
-            R = self.color.check(self.RColorSensor)
-            L = self.color.check(self.LColorSensor)
+            R = ColorCheck.check(self.RColorSensor)
+            L = ColorCheck.check(self.LColorSensor)
             
             if(R == Color.BLACK and L == Color.BLACK):
                 self.motor.drive(self.maxSpeed, 0)
@@ -83,15 +83,51 @@ class LineFollower:
         
     
     def passObstacle(self):
-        self.motor.drive(0,0)
-        self.brain.speaker.beep()
-        wait(2000)
+        self.motor.stop()
+        
+        while True:
+            self.brain.speaker.beep()
+            
+            if Button.CENTER in self.brain.buttons.pressed():
+                break
+            
+            wait(100)
+        
+        distance = self.ultraSonic.distance()
+        
+        if (distance < 100):
+            self.motor.straight(10 * 10 * -1)        
         
         self.motor.turn(90)
-        self.motor.s
-   
-    def drive(self, angle, speed):
-        self.motor.drive(speed, angle)
+        self.motor.straight(10 * 10)
+        
+        self.motor.turn(-90)
+        self.motor.straight(10 * 10)
+        
+        self.motor.turn(-90)
+        LBlack = False
+        
+        while True:
+            self.motor.drive(self.normalSpeed, 0)
+            LS = ColorCheck.check(self.LColorSensor)
+            RS = ColorCheck.check(self.RColorSensor)
+            
+            if (LBlack and LS == Color.WHITE):
+                break
+            
+            elif (LS == Color.BLACK):
+                self.motor.drive(self.maxSpeed, 150)
+                LBlack = True
+                
+            elif (RS == Color.BLACK):
+                self.motor.drive(self.maxSpeed, -150)
+                break
+            else:
+                self.motor.drive(self.normalSpeed, 0)
+        
+        
+
+
     
 if __name__ == "__main__":
     robotBrain = LineFollower()
