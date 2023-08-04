@@ -10,21 +10,21 @@ class ColorCheck:
     mapeamento = {}
         
     def check(sensor):
-        if (ColorCheck.mapeamento):
-            ColorCheck.mapeamento = getJSON()["CENTER"]
+        if not ColorCheck.mapeamento:
+            ColorCheck.mapeamento = getJSON()
             
         RGB = sensor.rgb()
         red = int(RGB[0])
         green = int(RGB[1])
         blue = int(RGB[2])
         
-        if (red >= int(self.mapeamento["BRANCO"]["RED"])  and green >= int(self.mapeamento["BRANCO"]["GREEN"]) and blue >= int(self.mapeamento["BRANCO"]["BLUE"])):
+        if (red >= int(self.mapeamento[0][0])  and green >= int(self.mapeamento[0][1]) and blue >= int(self.mapeamento[0][2])):
             return Color.WHITE
         
-        elif (red <= int(self.mapeamento["PRETO"]["RED"]) and green <= int(self.mapeamento["PRETO"]["GREEN"]) and blue <= int(self.mapeamento["PRETO"]["BLUE"])):
+        elif (red <= int(self.mapeamento[1][0]) and green <= int(self.mapeamento[1][1]) and blue <= int(self.mapeamento[1][2])):
             return Color.BLACK
         
-        elif (green > (int(self.mapeamento["VERDE"]["GREEN"]) + int(self.mapeamento["BRANCO"]["RED"])) or green + blue > red*2):
+        elif (green > (int(self.mapeamento[2][1]) + int(self.mapeamento[0][0])) or green + blue > red*2):
             return Color.GREEN
         
         else:

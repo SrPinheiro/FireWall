@@ -11,28 +11,16 @@ ev3.screen.clear()
 Color = ColorSensor(Port.S2)
 
 def saveJSON(json):
-    JSONTEXT = f'''{{
-    "CENTER": {{
-        "BRANCO": {{
-            "RED": "{json[0][0]}",
-            "GREEN": "{json[0][1]}",
-            "BLUE": "{json[0][2]}"
-        }},
-        "PRETO": {{
-            "RED": "{json[1][0]}",
-            "GREEN": "{json[1][1]}",
-            "BLUE": "{json[1][2]}"
-        }},
-        "VERDE": {{
-            "RED": "{json[2][0]}",
-            "GREEN": "{json[2][1]}",
-            "BLUE": "{json[2][2]}"
-        }}
-    }}
-}}'''
-
-    with open('colors.JSON', "w") as file:
-        file.write(JSONTEXT)
+    texto = ""
+    
+    for i in range(3):
+        texto += f'{json[i][0]}\n'
+        texto += f'{json[i][1]}\n'
+        texto += f'{json[i][2]}\n'
+        texto += ' \n'
+    
+    with open('colors', "w") as file:
+        file.write(texto)
 
 def searchColor(text):
     cor = Color.rgb()

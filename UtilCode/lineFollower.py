@@ -125,10 +125,7 @@ class LineFollower:
             else:
                 self.motor.drive(self.normalSpeed, 0)
         
-        
 
-
-    
 if __name__ == "__main__":
     robotBrain = LineFollower()
     robotBrain.run()
