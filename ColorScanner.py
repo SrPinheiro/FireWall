@@ -38,6 +38,7 @@ def searchColor(text):
             break
     
     ev3.screen.clear()
+    ev3.speaker.beep()
     ev3.screen.print("COR ATUALIZADA!")
     ev3.screen.print(cor)
     wait(2000)
@@ -66,6 +67,7 @@ def run():
         saveJSON(json_data)
 
         ev3.screen.clear()
+        ev3.speaker.beep()
         ev3.screen.print("Salvo com sucesso!")
         wait(2000)
 
