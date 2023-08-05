@@ -41,6 +41,10 @@ class LineFollower:
 
     def run(self):
         while True:
+            distance = self.ultraSonic.distance()
+            if (distance < 50):
+                self.passObstacle()
+                
             self.checkLineOP()
             # self.checkLineNew()
             
@@ -51,11 +55,6 @@ class LineFollower:
         RColor = ColorCheck.checkR(self.RColorSensor)
         LColor = ColorCheck.checkL(self.LColorSensor)
         
-        distance = self.ultraSonic.distance()
-        
-        if (distance < 100):
-            self.passObstacle()
-
         if (LColor == Color.GREEN or RColor == Color.GREEN):
             # self.motor.stop()
             # self.greenState.run()
@@ -75,35 +74,45 @@ class LineFollower:
         
         if R == Color.WHITE:
             RM = 0
-        elif R == Color.BLACK:
-            RM = 100
+            
         elif R == Color.GREEN:
             self.RgreenMap += 1
+            LM = 0
             
+        elif R == Color.BLACK:            
             if (self.RgreenMap > 5):
+                self.motor.stop()
                 # self.greenState()
                 ev3.speaker.beep()
+                ev3.screen.clear()
+                ev3.sceen.print(self.RgreenMap)
+                wait(5000)
                 return
-            
             else:
-                self.motor.stop()
-                return
-            
+                self.RgreenMap = 0
+                LM = 100
+
+
         if L == Color.WHITE:
             LM = 0
-        elif L == Color.BLACK:
-            LM = 100
+            
         elif L == Color.GREEN:
             self.LgreenMap += 1
+            LM = 0
             
+        elif L == Color.BLACK:            
             if (self.LgreenMap > 5):
+                self.motor.stop()
                 # self.greenState()
                 ev3.speaker.beep()
+                ev3.screen.clear()
+                ev3.sceen.print(self.LgreenMap)
+                wait(5000)
                 return
             else:
-                self.motor.stop()
-                return
-            
+                self.LgreenMap = 0
+                LM = 100
+
         self.motor.drive(self.normalSpeed, RM - LM)
             
     def makeTurn(self):        
@@ -134,8 +143,12 @@ class LineFollower:
         
         distance = self.ultraSonic.distance()
         
-        if (distance < 100):
-            self.motor.straight((100 - distance) * -1)        
+        while distance > 100:
+
+            if (distance < 100):
+                self.motor.straight((100 - distance) * -1)  
+            
+            distance = self.ultraSonic.distance()    
         
         self.motor.turn(90)
         self.motor.straight(100 * 10)
