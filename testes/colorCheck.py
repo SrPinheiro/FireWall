@@ -13,37 +13,38 @@ from getColors import getJSON
 
 class ColorCheck:
     mapeamento = {}
-    R, L = 0
-    LastR, LastL = None
+    r = 0
+    l = 0
+    LastR, LastL = None, None
     
     def checkR(sensor):
         result = check(sensor)
         
         if result == Color.GREEN:
-            ColorCheck.R += 1
+            ColorCheck.r += 1
             
-            if ColorCheck.R >= 3:
+            if ColorCheck.r >= 3:
                 ColorCheck.LastR = result
                 return result
             else:
                 return ColorCheck.LastR
         else:
-            ColorCheck.R = 0
+            ColorCheck.r = 0
             ColorCheck.LastR = result
             
     def checkL(sensor):
         result = check(sensor)
         
         if result == Color.GREEN:
-            ColorCheck.L += 1
+            ColorCheck.l += 1
             
-            if ColorCheck.L >= 3:
+            if ColorCheck.l >= 3:
                 ColorCheck.LastL = result
                 return result
             else:
                 return ColorCheck.LastL
         else:
-            ColorCheck.L = 0
+            ColorCheck.l = 0
             ColorCheck.LastL = result
         
         
