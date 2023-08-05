@@ -23,7 +23,7 @@ class LineFollower:
         self.ultraSonic =  UltrasonicSensor(Port.S3)
         
         self.maxSpeed = 70
-        self.normalSpeed = 50
+        self.normalSpeed = 60
         self.blackReflection = 30
         
         self.lineReflection = 10
@@ -45,8 +45,8 @@ class LineFollower:
             if (distance < 50):
                 self.passObstacle()
                 
-            self.checkLineOP()
-            # self.checkLineNew()
+            # self.checkLineOP()
+            self.checkLineNew()
             
 
             # wait(10)
@@ -58,7 +58,7 @@ class LineFollower:
         if (LColor == Color.GREEN or RColor == Color.GREEN):
             # self.motor.stop()
             # self.greenState.run()
-            ev3.speaker.beep()
+            self.brain.speaker.beep()
         
         if (LColor == Color.BLACK or RColor == Color.BLACK):
             self.makeTurn()
@@ -69,51 +69,75 @@ class LineFollower:
         R = self.RColorSensor.color()
         L = self.LColorSensor.color()
         
-        RM = 0
-        LM = 0
+        rm = 0
+        lm = 0
         
         if R == Color.WHITE:
-            RM = 0
+            rm = 0
+            
+            if self.RgreenMap > 140 and self.LgreenMap > 140:
+                self.motor.stop()
+                self.brain.speaker.beep()
+                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.motor.straight(50)
+                wait(1000)
+                self.RgreenMap = 0
+                self.LgreenMap = 0
+                
+                return
             
         elif R == Color.GREEN:
             self.RgreenMap += 1
-            LM = 0
+            rm = 0
             
         elif R == Color.BLACK:            
-            if (self.RgreenMap > 5):
+            if (self.RgreenMap > 140):
                 self.motor.stop()
-                # self.greenState()
-                ev3.speaker.beep()
-                ev3.screen.clear()
-                ev3.sceen.print(self.RgreenMap)
-                wait(5000)
+                self.brain.speaker.beep()
+                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                # self.brain.screen.clear()
+                # self.brain.screen.print(self.RgreenMap)
+                # wait(5000)
+                self.RgreenMap = 0
                 return
             else:
                 self.RgreenMap = 0
-                LM = 100
+                rm = 100
 
 
         if L == Color.WHITE:
-            LM = 0
+            lm = 0
+            
+            if self.RgreenMap > 140 and self.LgreenMap > 140:
+                self.motor.stop()
+                self.brain.speaker.beep()
+                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.motor.straight(50)
+                wait(1000)
+                self.RgreenMap = 0
+                self.LgreenMap = 0
             
         elif L == Color.GREEN:
             self.LgreenMap += 1
-            LM = 0
+            lm = 0
             
         elif L == Color.BLACK:            
-            if (self.LgreenMap > 5):
+            if (self.LgreenMap > 140):
                 self.motor.stop()
-                # self.greenState()
-                ev3.speaker.beep()
-                ev3.screen.clear()
-                ev3.sceen.print(self.LgreenMap)
-                wait(5000)
+                self.brain.speaker.beep()
+                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                # self.brain.screen.clear()
+                # self.brain.screen.print(self.RgreenMap)
+                # wait(5000)
+                self.LgreenMap = 0
+                self.RgreenMap = 0
+                
                 return
             else:
                 self.LgreenMap = 0
-                LM = 100
+                lm = 100
 
-        self.motor.drive(self.normalSpeed, RM - LM)
+        self.motor.drive(self.normalSpeed, lm - rm)
             
     def makeTurn(self):        
         while True:
@@ -121,7 +145,7 @@ class LineFollower:
             L = ColorCheck.check(self.LColorSensor)
             
             if(R == Color.BLACK and L == Color.BLACK):
-                self.motor.drive(self.maxSpeed, 0)
+                self.motor.drive(self.normalSpeed, 0)
                 
             elif(R == Color.GREEN or L == Color.GREEN):
                 # self.greenState()
@@ -131,10 +155,10 @@ class LineFollower:
                 break
             
             elif(R == Color.BLACK and L == Color.WHITE):
-                self.motor.drive(self.normalSpeed, 90)
+                self.motor.drive(self.normalSpeed, 95)
                 
             elif (R == Color.WHITE and L == Color.BLACK):
-                self.motor.drive(self.normalSpeed, -90)
+                self.motor.drive(self.normalSpeed, -95)
                 
             wait(50)
     
@@ -150,13 +174,14 @@ class LineFollower:
             
             distance = self.ultraSonic.distance()    
         
+        self.motor.turn(-90)
+        self.motor.straight(20 * 10)
+        
         self.motor.turn(90)
-        self.motor.straight(100 * 10)
+        self.motor.straight(40 * 10)
         
-        self.motor.turn(-90)
-        self.motor.straight(100 * 10)
-        
-        self.motor.turn(-90)
+        self.motor.turn(90)
+        self.motor.straight(5 * 10)
         LBlack = False
         
         while True:
@@ -172,7 +197,11 @@ class LineFollower:
                 LBlack = True
                 
             elif (RS == Color.BLACK):
+                self.motor.stop()
+                self.motor.turn(-50)
+                self.motor.straight(-3 * 10)
                 self.motor.drive(self.maxSpeed, -100)
+                
                 break
             else:
                 self.motor.drive(self.normalSpeed, 0)

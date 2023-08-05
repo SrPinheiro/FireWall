@@ -16,4 +16,12 @@ while True:
 
     ev3.screen.clear()
     ev3.screen.print(distance)
-    wait(500)
+    
+    if distance <= 50:
+        ev3.speaker.beep()
+        ev3.screen.print("!MUITO PERTO!")
+    elif(distance <= 100):
+        ev3.screen.print("!PERTO!")
+    else:
+        ev3.screen.print("longe")
+    wait(100)
