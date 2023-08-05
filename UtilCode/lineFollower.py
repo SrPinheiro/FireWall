@@ -37,6 +37,12 @@ class LineFollower:
         self.RgreenMap = 0
         self.LgreenMap = 0
         
+        self.RWhiteMap = 0
+        self.LWhiteMap = 0
+        
+        self.RBlackMap = 0
+        self.LBlackMap = 0
+        
         self.greenState = GreenState()
 
     def run(self):
@@ -47,9 +53,7 @@ class LineFollower:
                 
             # self.checkLineOP()
             self.checkLineNew()
-            
-
-            # wait(10)
+    
             
     def checkLineOp(self):
         RColor = ColorCheck.checkR(self.RColorSensor)
@@ -72,72 +76,130 @@ class LineFollower:
         rm = 0
         lm = 0
         
+        self.setState(R, "R")
+        self.setState(L, "L")
+        
+        #Controlador de linha direita
         if R == Color.WHITE:
-            rm = 0
-            
-            if self.RgreenMap > 140 and self.LgreenMap > 140:
-                self.motor.stop()
-                self.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
-                self.motor.straight(50)
-                wait(1000)
+            if self.RWhiteMap > 40:
+                if self.RgreenMap > 140 and self.LgreenMap > 140:
+                    self.motor.stop()
+                    self.brain.speaker.beep()
+                    self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    
+                    wait(1000)
+                
                 self.RgreenMap = 0
                 self.LgreenMap = 0
+
                 
-                return
-            
-        elif R == Color.GREEN:
-            self.RgreenMap += 1
-            rm = 0
-            
-        elif R == Color.BLACK:            
-            if (self.RgreenMap > 140):
-                self.motor.stop()
-                self.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
-                # self.brain.screen.clear()
-                # self.brain.screen.print(self.RgreenMap)
-                # wait(5000)
+        elif R == Color.BLACK:
+            if self.RBlackMap > 40:
+                if self.RgreenMap > 140:
+                    self.motor.stop()
+                    self.brain.speaker.beep()
+                    self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    
+                    wait(1000)
+                    
                 self.RgreenMap = 0
-                return
-            else:
-                self.RgreenMap = 0
-                rm = 100
+                rm = 90
 
-
+        #Controlador de linha esquerda
         if L == Color.WHITE:
-            lm = 0
-            
-            if self.RgreenMap > 140 and self.LgreenMap > 140:
-                self.motor.stop()
-                self.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
-                self.motor.straight(50)
-                wait(1000)
-                self.RgreenMap = 0
-                self.LgreenMap = 0
-            
-        elif L == Color.GREEN:
-            self.LgreenMap += 1
-            lm = 0
-            
-        elif L == Color.BLACK:            
-            if (self.LgreenMap > 140):
-                self.motor.stop()
-                self.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
-                # self.brain.screen.clear()
-                # self.brain.screen.print(self.RgreenMap)
-                # wait(5000)
-                self.LgreenMap = 0
-                self.RgreenMap = 0
+            if self.LWhiteMap > 40:
+                if self.RgreenMap > 140 and self.LgreenMap > 140:
+                    self.motor.stop()
+                    self.brain.speaker.beep()
+                    self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    
+                    wait(1000)
                 
-                return
-            else:
+                self.RgreenMap = 0
                 self.LgreenMap = 0
-                lm = 100
 
+                
+        elif L == Color.BLACK:
+            if self.LBlackMap > 40:
+                if self.LgreenMap > 140:
+                    self.motor.stop()
+                    self.brain.speaker.beep()
+                    self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    
+                    wait(1000)
+                    
+                self.LgreenMap = 0
+                lm = 90
+                
         self.motor.drive(self.normalSpeed, lm - rm)
+            
+
+        
+        # if R == Color.WHITE:
+        #     rm = 0
+            
+        #     if self.RgreenMap > 140 and self.LgreenMap > 140:
+        #         self.motor.stop()
+        #         self.brain.speaker.beep()
+        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
+        #         wait(1000)
+        #         self.RgreenMap = 0
+        #         self.LgreenMap = 0
+                
+        #         return
+            
+        # elif R == Color.GREEN:
+        #     self.RgreenMap += 1
+        #     rm = 0
+            
+        # elif R == Color.BLACK:            
+        #     if (self.RgreenMap > 140):
+        #         self.motor.stop()
+        #         self.brain.speaker.beep()
+        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
+        #         # self.brain.screen.clear()
+        #         # self.brain.screen.print(self.RgreenMap)
+        #         # wait(5000)
+        #         self.RgreenMap = 0
+        #         return
+        #     else:
+        #         self.RgreenMap = 0
+        #         rm = 100
+
+
+        # if L == Color.WHITE:
+        #     lm = 0
+            
+        #     if self.RgreenMap > 140 and self.LgreenMap > 140:
+        #         self.motor.stop()
+        #         self.brain.speaker.beep()
+        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
+        #         self.motor.straight(50)
+        #         wait(1000)
+        #         self.RgreenMap = 0
+        #         self.LgreenMap = 0
+            
+        # elif L == Color.GREEN:
+        #     self.LgreenMap += 1
+        #     lm = 0
+            
+        # elif L == Color.BLACK:            
+        #     if (self.LgreenMap > 140):
+        #         self.motor.stop()
+        #         self.brain.speaker.beep()
+        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
+        #         # self.brain.screen.clear()
+        #         # self.brain.screen.print(self.RgreenMap)
+        #         # wait(5000)
+        #         self.LgreenMap = 0
+        #         self.RgreenMap = 0
+                
+        #         return
+        #     else:
+        #         self.LgreenMap = 0
+        #         lm = 100
+
+        # self.motor.drive(self.normalSpeed, lm - rm)
             
     def makeTurn(self):        
         while True:
@@ -205,8 +267,41 @@ class LineFollower:
                 break
             else:
                 self.motor.drive(self.normalSpeed, 0)
-                
     
+    #
+    # Esse metodo serve para detectar quantas vezes uma cor foi vista em sequencia
+    # Objetivo: corrigir a margem de erro do sensor de cor
+    #
+    def setState(self, throwler, sensor):
+        if throwler == Color.WHITE:
+            if sensor == "L":
+                self.LWhiteMap += 1
+                self.LBlackMap = 0
+                # self.LgreenMap = 0
+            elif sensor == "R":
+                self.RWhiteMap += 1
+                self.RBlackMap = 0
+                # self.RgreenMap = 0
+                
+        elif throwler == Color.BLACK:
+            if sensor == "L":
+                self.LWhiteMap = 0
+                self.LBlackMap += 1
+                # self.LgreenMap = 0
+            elif sensor == "R":
+                self.RWhiteMap = 0
+                self.RBlackMap += 1
+                # self.RgreenMap = 0
+                
+        elif throwler == Color.GREEN:
+            if sensor == "L":
+                self.LWhiteMap = 0
+                self.LBlackMap = 0
+                self.LgreenMap += 1
+            elif sensor == "R":
+                self.RWhiteMap = 0
+                self.RBlackMap = 0
+                self.RgreenMap += 1
 
 
 if __name__ == "__main__":

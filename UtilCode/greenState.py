@@ -28,6 +28,7 @@ class GreenState:
     def run(self, r, l):
         if (r > 140):
             self.R = True
+            
         if (l > 140):
             self.L = True
             
@@ -47,38 +48,9 @@ class GreenState:
             self.motor.straight(60)
             wait(1000)
         
-        
-    def startCheck(self):
-        self.RTurn()
-        wait(100)
-        self.checkR()
-        
-        self.LTurn()
-        self.LTurn()
-        self.checkL()
-        
-        self.RTurn()
-        
-        
-        if(self.R and self.L):
-            self.turn360() #Dar a volta
-        else:
-            self.straight(30)
-
-            if(self.R and not self.L):
-                self.TurnLeft() #Ir a la esquerda
-            
-            elif(not self.R and self.L):
-                self.TurnRight() #Ir a la direita
-            else:
-                self.walkStraight() #Andar em frente
-            
-            wait(5000)
-        
     def turn180(self):
         self.motor.turn(180)
         
-    
     def TurnLeft(self):
         self.motor.turn(-90)
         
