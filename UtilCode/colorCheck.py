@@ -1,9 +1,3 @@
-from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
-                                 InfraredSensor, UltrasonicSensor, GyroSensor)
-from pybricks.parameters import Port, Stop, Direction, Button, Color
-from pybricks.tools import wait, StopWatch, DataLog
-from pybricks.robotics import DriveBase
 from UtilCode.getColors import getJSON
 
 class ColorCheck:
@@ -40,7 +34,7 @@ class ColorCheck:
             response = True
             
         elif value < 8:
-            if value2 > (value - 4) and value2 < (value + 4):
+            if value2 > (value - 3) and value2 < (value + 3):
                 response = True
         
         return response
