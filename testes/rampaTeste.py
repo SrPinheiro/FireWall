@@ -11,5 +11,20 @@ ev3 = EV3Brick()
 
 motor = Motor(Port.C)
 
-motor.run(100)
-wait(3000)
+def upGrab():
+    motor.run_until_stalled(200, 0)
+        
+def downGrab():
+    motor.run_until_stalled(-200, 0)
+
+while True:
+    if Button.UP in ev3.buttons.pressed():
+        ev3.speaker.beep()
+        upGrab()
+        
+    elif Button.DOWN in ev3.buttons.pressed():
+        ev3.speaker.beep()
+        downGrab()
+    
+    wait(200)
+    
