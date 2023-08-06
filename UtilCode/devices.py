@@ -1,4 +1,9 @@
-from parameters import Parametros
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
+from pybricks.parameters import Port
+from pybricks.robotics import DriveBase
+
+from UtilCode.parameters import Parametros
 
 class Devices:
     brain = EV3Brick() # Cerebro
