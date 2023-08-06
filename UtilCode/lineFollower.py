@@ -31,6 +31,8 @@ class LineFollower:
         self.TurningL = False
         self.TurningR = False
         
+        self.run() # inicia o codigo
+        
     # Tudo começa aqui...
     def run(self):
         while True:
