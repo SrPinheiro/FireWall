@@ -5,108 +5,112 @@ from UtilCode.parameters import Parametros
 
 # Classe responsavel por controlar o robo quando entrar na arena
 class Arena:
-    position = 90
-    largura = 0
-    alturaR = 0
-    alturaL = 0
     
-    def run():
+    def __init__(self):
+        self.position = 90
+        self.largura = 0
+        self.alturaR = 0
+        self.alturaL = 0
+        
+        self.run() # inicia o codigo
+    
+    def run(self):
         while True:
             if Devices.ultraSonic.distance() < 3.5:
-                Arena.turnLeft()
+                self.turnLeft()
                 wait(500)
             
             if Devices.FColorSensor.reflection() > 40:
                 Devices.motor.straight(-10 * 10)
-                Arena.downGrab()
+                self.downGrab()
                 wait(200)
                 Devices.motor.straight(20 * 10)
                 
-                Arena.upGrab()
+                self.upGrab()
                 wait(200)
                 
             if Devices.ultraSonic.distance() < 3.5 and Devices.FColorSensor.color() == Color.BLACK:
-                Arena.dispose()
+                self.dispose()
                 
             
             wait(1000)
         
     
-    def mapArena():
+    def mapArena(self):
         while Devices.ultraSonic.distance() > 3.5:
             Devices.motor.drive(Parametros.maxSpeed, 0)
             
             
-        Arena.turnRight()
+        self.turnRight()
         
         while Devices.ultraSonic.distance() > 3.5:
             Devices.motor.drive(Parametros.maxSpeed, 0)
             
-        Arena.turnBack()
+        self.turnBack()
         Devices.motor.drive(Parametros.maxSpeed * -1, 0)
         
-        Arena.alturaL = Devices.ultraSonic.distance()
+        self.alturaL = Devices.ultraSonic.distance()
         
             
-    def upGrab():
+    def upGrab(self):
         Devices.grab.run_until_stalled(200, 0)
         
-    def downGrab():
+    def downGrab(self):
         Devices.grab.run_until_stalled(-200, 0)
         
-    def upCage():
+    def upCage(self):
         Devices.cage.run_until_stalled(200, 0)
         
-    def downDownCage():
+    def downDownCage(self):
         Devices.cage.run_until_stalled(-200, 0)
         
         
-    def dispose():
-        Arena.upGrab()
+    def dispose(self):
+        self.upGrab()
         
         while Devices.ultraSonic.distance() < 2000:
             Devices.motor.drive(Parametros.maxSpeed, 0)
         
         Devices.motor.straight(-10 * 10)
         
-        Arena.turnback()
-        Arena.upCage()
+        self.turnback()
+        self.upCage()
         
         Devices.motor.straight(-30 * 10)
         
         
-    def turnLeft():
+    def turnLeft(self):
         Devices.motor.turn(Parametros.L90)
         
-        if(Arena.position == 90):
-            Arena.position = 180
-        elif(Arena.position == 180):
-            Arena.position = 270
-        elif(Arena.position == 270):
-            Arena.position = 0
-        elif(Arena.position == 0):
-            Arena.position = 90
+        if(self.position == 90):
+            self.position = 180
+        elif(self.position == 180):
+            self.position = 270
+        elif(self.position == 270):
+            self.position = 0
+        elif(self.position == 0):
+            self.position = 90
             
-    def turnRight():
+    def turnRight(self):
         Devices.motor.turn(Parametros.R90)
         
-        if(Arena.position == 90):
-            Arena.position = 0
-        elif(Arena.position == 0):
-            Arena.position = 270
-        elif(Arena.position == 270):
-            Arena.position = 180
-        elif(Arena.position == 180):
-            Arena.position = 90
+        if(self.position == 90):
+            self.position = 0
+        elif(self.position == 0):
+            self.position = 270
+        elif(self.position == 270):
+            self.position = 180
+        elif(self.position == 180):
+            self.position = 90
             
-    def turnBack():
+    def turnBack(self):
         Devices.motor.turn(180)
         
-        if Arena.position == 0:
-            Arena.position = 180
-        elif Arena.position == 180:
-            Arena.position = 0
-        elif Arena.position == 90:
-            Arena.position = 270
-        elif Arena.position == 270:
-            Arena.position = 90
+        if self.position == 0:
+            self.position = 180
+        elif self.position == 180:
+            self.position = 0
+        elif self.position == 90:
+            self.position = 270
+        elif self.position == 270:
+            self.position = 90
