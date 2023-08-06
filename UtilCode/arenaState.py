@@ -3,6 +3,7 @@ from pybricks.parameters import Color
 from UtilCode.devices import Devices
 from UtilCode.parameters import Parametros
 
+# Classe responsavel por controlar o robo quando entrar na arena
 class Arena:
     position = 90
     largura = 0

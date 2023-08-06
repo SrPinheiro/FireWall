@@ -4,6 +4,7 @@ from pybricks.parameters import Color
 from UtilCode.devices import Devices
 from UtilCode.parameters import Parametros
 
+# Classe responsavel por controlar o robo quando ele passar por uma linha verde
 class GreenState:
     def __init__(self):   
 

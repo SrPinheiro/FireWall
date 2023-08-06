@@ -5,6 +5,7 @@ from pybricks.robotics import DriveBase
 
 from UtilCode.parameters import Parametros
 
+# Classe responsavel por mapear todo o hardware do robo
 class Devices:
     brain = EV3Brick() # Cerebro
         

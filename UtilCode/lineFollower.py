@@ -7,6 +7,7 @@ from UtilCode.devices import Devices
 from UtilCode.parameters import Parametros
 from UtilCode.arenaState import ArenaState
 
+# Classe responsavel por controlar o robo
 class LineFollower:
     def __init__(self):        
         Devices.brain.speaker.beep()
@@ -14,6 +15,7 @@ class LineFollower:
         Devices.brain.light.on(Color.ORANGE)
         Devices.brain.screen.draw_text(50, 60, "! FireWall !")
         
+        # Contagem das cores
         self.RgreenMap = 0
         self.LgreenMap = 0
         
@@ -25,33 +27,20 @@ class LineFollower:
         
         self.greenState = GreenState()
         
+        # Controle de giro
         self.TurningL = False
         self.TurningR = False
         
+    # Tudo começa aqui...
     def run(self):
         while True:
             distance = Devices.ultraSonic.distance()
             if (distance < 50):
                 self.passObstacle()
                 
-            # self.checkLineOP()
             self.checkLineNew()
     
-            
-    def checkLineOp(self):
-        RColor = ColorCheck.checkR(Devices.RColorSensor)
-        LColor = ColorCheck.checkL(Devices.LColorSensor)
-        
-        if (LColor == Color.GREEN or RColor == Color.GREEN):
-            # Devices.motor.stop()
-            # self.greenState.run()
-            Devices.brain.speaker.beep()
-        
-        if (LColor == Color.BLACK or RColor == Color.BLACK):
-            self.makeTurn()
-            
-        Devices.motor.drive(Devices.maxSpeed, 0)
-                
+    # Metodo responsavel por verificar as cores e responder de acordo
     def checkLineNew(self):
         R = Devices.RcolorSensor.color()
         L = Devices.LColorSensor.color()
@@ -137,31 +126,9 @@ class LineFollower:
                     lm = 90
                 
         Devices.motor.drive(Parametros.normalSpeed, lm - rm)
-
-            
-    def makeTurn(self):        
-        while True:
-            R = ColorCheck.check(Devices.)
-            L = ColorCheck.check(Devices.LColorSensor)
-            
-            if(R == Color.BLACK and L == Color.BLACK):
-                Devices.motor.drive(Parametros.normalSpeed, 0)
-                
-            elif(R == Color.GREEN or L == Color.GREEN):
-                # self.greenState()
-                "a"
-                
-            elif(R == Color.WHITE and L == Color.WHITE):
-                break
-            
-            elif(R == Color.BLACK and L == Color.WHITE):
-                Devices.motor.drive(Parametros.normalSpeed, 95)
-                
-            elif (R == Color.WHITE and L == Color.BLACK):
-                Devices.motor.drive(Parametros.normalSpeed, -95)
-                
-            wait(50)
-    
+        
+        
+    # Metodo responsavel por desviar de obstaculos
     def passObstacle(self):
         Devices.motor.stop()
         
