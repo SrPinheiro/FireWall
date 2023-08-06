@@ -1,5 +1,5 @@
 from pybricks.parameters import Color
-
+from pybricks.tools import wait
 from UtilCode.devices import Devices
 from UtilCode.parameters import Parametros
 
