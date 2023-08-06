@@ -1,38 +1,18 @@
-from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
-                                 InfraredSensor, UltrasonicSensor, GyroSensor)
-from pybricks.parameters import Port, Stop, Direction, Button, Color
+from pybricks.parameters import Color
 from pybricks.tools import wait
-from pybricks.robotics import DriveBase
-
+    
 from UtilCode.colorCheck import ColorCheck
 from UtilCode.greenState import GreenState
+from UtilCode.devices import Devices
+from UtilCode.parameters import Parametros
+from UtilCode.arenaState import ArenaState
 
 class LineFollower:
-    def __init__(self):
-        self.brain = EV3Brick()
-        
-        self.RColorSensor = ColorSensor(Port.S2)
-        self.LColorSensor = ColorSensor(Port.S1)
-
-        self.LMotor = Motor(Port.B)
-        self.RMotor = Motor(Port.A)
-
-        self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=35, axle_track=210)
-        
-        self.ultraSonic =  UltrasonicSensor(Port.S3)
-        
-        self.maxSpeed = 70
-        self.normalSpeed = 60
-        self.blackReflection = 30
-        
-        self.lineReflection = 10
-        self.whiteReflection = 40
-
-        self.brain.speaker.beep()
-        self.brain.screen.clear()
-        self.brain.light.on(Color.ORANGE)
-        self.brain.screen.draw_text(50, 60, "! FireWall !")
+    def __init__(self):        
+        Devices.brain.speaker.beep()
+        Devices.brain.screen.clear()
+        Devices.brain.light.on(Color.ORANGE)
+        Devices.brain.screen.draw_text(50, 60, "! FireWall !")
         
         self.RgreenMap = 0
         self.LgreenMap = 0
@@ -44,10 +24,13 @@ class LineFollower:
         self.LBlackMap = 0
         
         self.greenState = GreenState()
-
+        
+        self.TurningL = False
+        self.TurningR = False
+        
     def run(self):
         while True:
-            distance = self.ultraSonic.distance()
+            distance = Devices.ultraSonic.distance()
             if (distance < 50):
                 self.passObstacle()
                 
@@ -56,22 +39,22 @@ class LineFollower:
     
             
     def checkLineOp(self):
-        RColor = ColorCheck.checkR(self.RColorSensor)
-        LColor = ColorCheck.checkL(self.LColorSensor)
+        RColor = ColorCheck.checkR(Devices.RColorSensor)
+        LColor = ColorCheck.checkL(Devices.LColorSensor)
         
         if (LColor == Color.GREEN or RColor == Color.GREEN):
-            # self.motor.stop()
+            # Devices.motor.stop()
             # self.greenState.run()
-            self.brain.speaker.beep()
+            Devices.brain.speaker.beep()
         
         if (LColor == Color.BLACK or RColor == Color.BLACK):
             self.makeTurn()
             
-        self.motor.drive(self.maxSpeed, 0)
+        Devices.motor.drive(Devices.maxSpeed, 0)
                 
     def checkLineNew(self):
-        R = self.RColorSensor.color()
-        L = self.LColorSensor.color()
+        R = Devices.RcolorSensor.color()
+        L = Devices.LColorSensor.color()
         
         rm = 0
         lm = 0
@@ -83,131 +66,86 @@ class LineFollower:
         if R == Color.WHITE:
             if self.RWhiteMap > 40:
                 if self.RgreenMap > 140 and self.LgreenMap > 140:
-                    self.motor.stop()
-                    self.brain.speaker.beep()
+                    Devices.motor.stop()
+                    Devices.brain.speaker.beep()
                     self.greenState.run(self.RgreenMap, self.LgreenMap)
                     
                     wait(1000)
+                else:
+                    self.TurningR = False
                 
                 self.RgreenMap = 0
                 self.LgreenMap = 0
+                
+                self.TurningR = False
 
                 
         elif R == Color.BLACK:
             if self.RBlackMap > 40:
                 if self.RgreenMap > 140:
-                    self.motor.stop()
-                    self.brain.speaker.beep()
+                    Devices.motor.stop()
+                    Devices.brain.speaker.beep()
+                    
                     self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    self.TurningR = False
                     
                     wait(1000)
+                else:
+                    self.TurningR = True
                     
                 self.RgreenMap = 0
-                rm = 90
+                
+                if self.TurningL:
+                    rm = 70
+                else:
+                    rm = 90
+                    self.TurningR = True
+                    
 
         #Controlador de linha esquerda
         if L == Color.WHITE:
             if self.LWhiteMap > 40:
                 if self.RgreenMap > 140 and self.LgreenMap > 140:
-                    self.motor.stop()
-                    self.brain.speaker.beep()
+                    Devices.motor.stop()
+                    Devices.brain.speaker.beep()
                     self.greenState.run(self.RgreenMap, self.LgreenMap)
                     
                     wait(1000)
                 
                 self.RgreenMap = 0
                 self.LgreenMap = 0
+                
+                self.TurningL = False
 
                 
         elif L == Color.BLACK:
             if self.LBlackMap > 40:
                 if self.LgreenMap > 140:
-                    self.motor.stop()
-                    self.brain.speaker.beep()
+                    Devices.motor.stop()
+                    Devices.brain.speaker.beep()
+                    
                     self.greenState.run(self.RgreenMap, self.LgreenMap)
+                    self.TurningL = False
                     
                     wait(1000)
                     
                 self.LgreenMap = 0
-                lm = 90
                 
-        self.motor.drive(self.normalSpeed, lm - rm)
-            
-
-        
-        # if R == Color.WHITE:
-        #     rm = 0
-            
-        #     if self.RgreenMap > 140 and self.LgreenMap > 140:
-        #         self.motor.stop()
-        #         self.brain.speaker.beep()
-        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
-        #         wait(1000)
-        #         self.RgreenMap = 0
-        #         self.LgreenMap = 0
+                if self.TurningR:
+                    lm = 70
+                else:
+                    lm = 90
                 
-        #         return
-            
-        # elif R == Color.GREEN:
-        #     self.RgreenMap += 1
-        #     rm = 0
-            
-        # elif R == Color.BLACK:            
-        #     if (self.RgreenMap > 140):
-        #         self.motor.stop()
-        #         self.brain.speaker.beep()
-        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
-        #         # self.brain.screen.clear()
-        #         # self.brain.screen.print(self.RgreenMap)
-        #         # wait(5000)
-        #         self.RgreenMap = 0
-        #         return
-        #     else:
-        #         self.RgreenMap = 0
-        #         rm = 100
+        Devices.motor.drive(Parametros.normalSpeed, lm - rm)
 
-
-        # if L == Color.WHITE:
-        #     lm = 0
-            
-        #     if self.RgreenMap > 140 and self.LgreenMap > 140:
-        #         self.motor.stop()
-        #         self.brain.speaker.beep()
-        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
-        #         self.motor.straight(50)
-        #         wait(1000)
-        #         self.RgreenMap = 0
-        #         self.LgreenMap = 0
-            
-        # elif L == Color.GREEN:
-        #     self.LgreenMap += 1
-        #     lm = 0
-            
-        # elif L == Color.BLACK:            
-        #     if (self.LgreenMap > 140):
-        #         self.motor.stop()
-        #         self.brain.speaker.beep()
-        #         self.greenState.run(self.RgreenMap, self.LgreenMap)
-        #         # self.brain.screen.clear()
-        #         # self.brain.screen.print(self.RgreenMap)
-        #         # wait(5000)
-        #         self.LgreenMap = 0
-        #         self.RgreenMap = 0
-                
-        #         return
-        #     else:
-        #         self.LgreenMap = 0
-        #         lm = 100
-
-        # self.motor.drive(self.normalSpeed, lm - rm)
             
     def makeTurn(self):        
         while True:
-            R = ColorCheck.check(self.RColorSensor)
-            L = ColorCheck.check(self.LColorSensor)
+            R = ColorCheck.check(Devices.)
+            L = ColorCheck.check(Devices.LColorSensor)
             
             if(R == Color.BLACK and L == Color.BLACK):
-                self.motor.drive(self.normalSpeed, 0)
+                Devices.motor.drive(Parametros.normalSpeed, 0)
                 
             elif(R == Color.GREEN or L == Color.GREEN):
                 # self.greenState()
@@ -217,56 +155,66 @@ class LineFollower:
                 break
             
             elif(R == Color.BLACK and L == Color.WHITE):
-                self.motor.drive(self.normalSpeed, 95)
+                Devices.motor.drive(Parametros.normalSpeed, 95)
                 
             elif (R == Color.WHITE and L == Color.BLACK):
-                self.motor.drive(self.normalSpeed, -95)
+                Devices.motor.drive(Parametros.normalSpeed, -95)
                 
             wait(50)
     
     def passObstacle(self):
-        self.motor.stop()
+        Devices.motor.stop()
         
-        distance = self.ultraSonic.distance()
+        distance = Devices.ultraSonic.distance()
         
         while distance > 100:
 
             if (distance < 100):
-                self.motor.straight((100 - distance) * -1)  
+                Devices.motor.straight((100 - distance) * -1)  
             
-            distance = self.ultraSonic.distance()    
+            distance = Devices.ultraSonic.distance()    
         
-        self.motor.turn(-90)
-        self.motor.straight(20 * 10)
+        Devices.motor.turn(-90)
+        Devices.motor.straight(20 * 10)
         
-        self.motor.turn(90)
-        self.motor.straight(40 * 10)
+        Devices.motor.turn(90)
+        Devices.motor.straight(40 * 10)
         
-        self.motor.turn(90)
-        self.motor.straight(5 * 10)
+        Devices.motor.turn(90)
+        Devices.motor.straight(5 * 10)
         LBlack = False
         
         while True:
-            self.motor.drive(self.normalSpeed, 0)
-            LS = ColorCheck.check(self.LColorSensor)
-            RS = ColorCheck.check(self.RColorSensor)
+            Devices.motor.drive(Parametros.normalSpeed, 0)
+            LS = ColorCheck.check(Devices.LColorSensor)
+            RS = ColorCheck.check(Devices.RColorSensor)
             
-            if (LBlack and LS == Color.WHITE):
-                break
-            
-            elif (LS == Color.BLACK):
-                self.motor.drive(self.maxSpeed, 100)
+            if LS == Color.BLACK and not LBlack:
+                Devices.motor.drive(Devices.maxSpeed, 100)
                 LBlack = True
                 
+            if (LBlack and LS == Color.WHITE and RS == Color.WHITE):
+                Devices.motor.stop()
+                break
+                
+            elif RS == Color.BLACK and LS == Color.BLACK:
+                Devices.motor.stop()
+                Devices.motor.straight(10 * 10)
+                Devices.motor.turn(-90)
+                Devices.motor.straight(-3 * 10)
+                Devices.motor.drive(Devices.maxSpeed, -100)
+                
+                break
+                
             elif (RS == Color.BLACK):
-                self.motor.stop()
-                self.motor.turn(-50)
-                self.motor.straight(-3 * 10)
-                self.motor.drive(self.maxSpeed, -100)
+                Devices.motor.stop()
+                Devices.motor.turn(-50)
+                Devices.motor.straight(-3 * 10)
+                Devices.motor.drive(Devices.maxSpeed, -100)
                 
                 break
             else:
-                self.motor.drive(self.normalSpeed, 0)
+                Devices.motor.drive(Parametros.normalSpeed, 0)
     
     #
     # Esse metodo serve para detectar quantas vezes uma cor foi vista em sequencia
