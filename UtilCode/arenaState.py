@@ -15,7 +15,13 @@ class Arena:
         self.run() # inicia o codigo
     
     def run(self):
+        self.upGrab()
+        
         while True:
+            while Devices.ultraSonic.distance() > 4:
+                Devices.motor.drive(Parametros.maxSpeed, 0)
+            
+            
             if Devices.ultraSonic.distance() < 3.5:
                 self.turnLeft()
                 wait(500)
