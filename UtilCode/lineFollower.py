@@ -184,6 +184,35 @@ class LineFollower:
                 break
             else:
                 Devices.motor.drive(Parametros.normalSpeed, 0)
+                
+                
+    def Barramento(self):
+        Devices.motor.stop()
+        LLine = False
+        while Devices.ultraSonic.distance() > 100:
+            Devices.motor.drive(Parametros.normalSpeed * -1, 0)
+            
+        Devices.motor.stop()
+        Devices.motor.turn(-60)
+        
+        Devices.motor.drive(Parametros.normalSpeed, -60)
+        wait(1000)
+        
+        Bl = 0
+        while True:
+            if Bl >  30:
+                LLine = True
+            
+            if Devices.LColorSensor.color() == Color.BLACK:
+                Bl += 1
+                
+            elif Devices.LColorSensor.color() == Color.WHITE and LLine:
+                break
+            
+            elif Devices.LColorSensor.color() == Color.WHITE:
+                Bl = 0
+            
+            
     
     #
     # Esse metodo serve para detectar quantas vezes uma cor foi vista em sequencia
