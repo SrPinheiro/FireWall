@@ -17,14 +17,15 @@ class ColorCheck:
         red = int(RGB[0])
         green = int(RGB[1])
         blue = int(RGB[2])
+        color = sensor.color()
         
-        if (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[0][0], ColorCheck.mapeamento[0][1], ColorCheck.mapeamento[0][2]])):
+        if (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[0][0], ColorCheck.mapeamento[0][1], ColorCheck.mapeamento[0][2]]) or color == Color.WHITE):
             return Color.WHITE
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]])):
+        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or color == Color.BLACK):
             return Color.BLACK
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]])):
+        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN):
             return Color.GREEN
         
         else:
@@ -40,7 +41,7 @@ class ColorCheck:
             response = True
             
         elif value < 8:
-            if value2 > (value - 4) and value2 < (value + 4):
+            if value2 > (value - 3) and value2 < (value + 3):
                 response = True
         
         return response

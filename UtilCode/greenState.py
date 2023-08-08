@@ -26,10 +26,10 @@ class GreenState:
         self.motor.drive(0,0)
     
     def run(self, r, l):
-        if (r > 140):
+        if (r > 70):
             self.R = True
             
-        if (l > 140):
+        if (l > 70):
             self.L = True
             
         if(self.R and self.L):
@@ -47,6 +47,8 @@ class GreenState:
                 
             self.motor.straight(60)
             wait(1000)
+            
+        self.L, self.R = False, False
         
     def turn180(self):
         self.motor.turn(180)
