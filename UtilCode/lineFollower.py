@@ -7,12 +7,13 @@ from pybricks.robotics import DriveBase
 
 from UtilCode.colorCheck import ColorCheck
 from UtilCode.greenState import GreenState
+from UtilCode.arenaState import Arena
 
 class LineFollower:
     def __init__(self):
         self.brain = EV3Brick()
         
-        self.RColorSensor = ColorSensor(Port.S2)
+        self.RColorSensor = ColorSensor(Port.S3)
         self.LColorSensor = ColorSensor(Port.S1)
 
         self.LMotor = Motor(Port.B)
@@ -20,10 +21,10 @@ class LineFollower:
 
         self.motor = DriveBase(left_motor=self.LMotor, right_motor=self.RMotor, wheel_diameter=35, axle_track=210)
         
-        self.ultraSonic =  UltrasonicSensor(Port.S3)
+        self.ultraSonic =  UltrasonicSensor(Port.S2)
         
-        self.maxSpeed = 70
-        self.normalSpeed = 60
+        self.maxSpeed = 3
+        self.normalSpeed = 45
         self.blackReflection = 30
         
         self.lineReflection = 10
@@ -43,6 +44,10 @@ class LineFollower:
         self.RBlackMap = 0
         self.LBlackMap = 0
         
+        self.RGpassed = False
+        self.LGpassed = False
+        
+        
         self.Tl = False
         self.Tr = False
         
@@ -53,6 +58,9 @@ class LineFollower:
             distance = self.ultraSonic.distance()
             if (distance < 50):
                 self.passObstacle()
+                
+            if self.brain.buttons.pressed():
+                Arena()
                 
             # self.checkLineOP()
             self.checkLineNew()
@@ -73,22 +81,24 @@ class LineFollower:
         self.motor.drive(self.maxSpeed, 0)
                 
     def checkLineNew(self):
-        R = self.RColorSensor.color()
-        L = self.LColorSensor.color()
+        R = ColorCheck.check(self.RColorSensor)
+        L = ColorCheck.check(self.LColorSensor)
         
         rm = 0
         lm = 0
         
+        
+        
         self.setState(R, "R")
         self.setState(L, "L")
         
-        #Controlador de linha direita
         self.brain.screen.clear()
         self.brain.screen.print(self.RgreenMap)
         self.brain.screen.print(self.LgreenMap)
         
+        #Controlador de linha direita
         if R == Color.WHITE:
-            if self.RgreenMap >= 70 and self.LgreenMap >= 70:
+            if self.RgreenMap >= 3 and self.LgreenMap >= 3:
                 self.motor.stop()
                 self.brain.speaker.beep()
                 self.greenState.run(self.RgreenMap, self.LgreenMap)
@@ -100,23 +110,24 @@ class LineFollower:
 
                 
         elif R == Color.BLACK:
-            if self.RgreenMap >= 70:
+            if self.RgreenMap >= 3:
                 self.motor.stop()
                 self.brain.speaker.beep()
                 self.greenState.run(self.RgreenMap, self.LgreenMap)
             else:
                 self.Tr = True
-                
-            self.RgreenMap = 0
+            
+            if self.RBlackMap >= 3:   
+                self.RgreenMap = 0
             
             if self.Tl:
-                rm = 100
-            else:
                 rm = 90
+            else:
+                rm = 80
 
         #Controlador de linha esquerda
         if L == Color.WHITE:
-            if self.RgreenMap >= 70 and self.LgreenMap >= 70:
+            if self.RgreenMap >= 3 and self.LgreenMap >= 3:
                 self.motor.stop()
                 self.brain.speaker.beep()
                 self.greenState.run(self.RgreenMap, self.LgreenMap)
@@ -129,18 +140,18 @@ class LineFollower:
                 
         elif L == Color.BLACK:              
                     
-            if self.LgreenMap >= 70:
+            if self.LgreenMap >= 3:
                 self.motor.stop()
                 self.brain.speaker.beep()
                 self.greenState.run(self.RgreenMap, self.LgreenMap)
-                 
-            self.LgreenMap = 0
-            if self.Tr:
-                lm = 100
-            else:
-                lm = 90
-                self.Tl = True
                 
+            if self.LBlackMap >= 3:
+                self.LgreenMap = 0
+            if self.Tr:
+                lm = 90
+            else:
+                lm = 80
+                self.Tl = True
                 
         self.motor.drive(self.normalSpeed, lm - rm)
             

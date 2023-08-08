@@ -11,7 +11,7 @@ class GreenState:
         self.brain = EV3Brick()
         
         self.RColorSensor = ColorSensor(Port.S1)
-        self.LColorSensor = ColorSensor(Port.S2)
+        self.LColorSensor = ColorSensor(Port.S3)
         
         self.LMotor = Motor(Port.B)
         self.RMotor = Motor(Port.A)
@@ -26,10 +26,13 @@ class GreenState:
         self.motor.drive(0,0)
     
     def run(self, r, l):
-        if (r > 70):
+        while True:
+            self.brain.speaker.beep()
+            
+        if (r >= 3):
             self.R = True
             
-        if (l > 70):
+        if (l >= 3):
             self.L = True
             
         if(self.R and self.L):
