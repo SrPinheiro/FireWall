@@ -45,7 +45,7 @@ class LineFollower:
     def run(self):
         while True:
             if Devices.ultraSonic.distance() < 50:
-                self.passObstacle()
+                self.obstaculo()
 
             if Devices.brain.buttons.pressed():
                 Arena()
@@ -89,7 +89,7 @@ class LineFollower:
             else:
                 self.Tr = True
 
-            if self.RBlackMap >= Parametros.greenMap:
+            if self.RBlackMap >= 10:
                 self.RGreenMap = 0
 
             if self.Tl:
@@ -118,7 +118,7 @@ class LineFollower:
                 Devices.brain.speaker.beep()
                 self.greenState.run(self.RGreenMap, self.LGreenMap)
 
-            if self.LBlackMap >= Parametros.greenMap:
+            if self.LBlackMap >= 10:
                 self.LGreenMap = 0
             if self.Tr:
                 lm = 90
@@ -167,31 +167,34 @@ class LineFollower:
             else:
                 Devices.motor.drive(Parametros.normalSpeed, 0)
 
-        def obstaculo(self):
-            Devices.motor.stop()
-            LLine = False
-            while Devices.ultraSonic.distance() > 100:
-                Devices.motor.drive(Parametros.normalSpeed * -1, 0)
+    def obstaculo(self):
+        Devices.motor.stop()
+        LLine = False
+        
+        while Devices.ultraSonic.distance() < 190:
+            Devices.motor.drive(-100, 0)
 
-            Devices.motor.stop()
-            Devices.motor.turn(-60)
+        Devices.motor.stop()
+        Devices.motor.turn(60)
 
-            Devices.motor.drive(Parametros.normalSpeed, -60)
-            wait(1000)
+        Devices.motor.drive(100, -15)
+        wait(7000)
 
-            Bl = 0
-            while True:
-                if Bl > 30:
-                    LLine = True
+        Bl = 0
+        while True:
+            if Bl > 3:
+                LLine = True
 
-                if Devices.LColorSensor.color() == Color.BLACK:
-                    Bl += 1
+            if Devices.LColorSensor.color() == Color.BLACK:
+                Bl += 1
 
-                elif Devices.LColorSensor.color() == Color.WHITE and LLine:
-                    break
+            elif Devices.LColorSensor.color() == Color.WHITE and LLine:
+                Devices.motor.stop()
+                Devices.motor.turn(10)
+                break
 
-                elif Devices.LColorSensor.color() == Color.WHITE:
-                    Bl = 0
+            elif Devices.LColorSensor.color() == Color.WHITE:
+                Bl = 0
 
     #
     # Esse metodo serve para detectar quantas vezes uma cor foi vista em sequencia

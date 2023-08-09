@@ -6,10 +6,14 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+from devices import Devices
 
 ev3 = EV3Brick()
 
-motor = Motor(Port.C)
-
-motor.run(100)
-wait(3000)
+while True:
+    if Button.DOWN in Devices.brain.buttons.pressed():
+        Devices.grab.run(250)
+        
+    if Button.UP in Devices.brain.buttons.pressed():
+        Devices.grab.run(-250)
+        

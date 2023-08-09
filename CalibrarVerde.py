@@ -20,6 +20,8 @@ class Calibrar:
         self.maxBlue = 0
     
     def run(self):
+        Devices.brain.speaker.beep()
+        Devices.motor.drive(10,0)
         while True:
             if Devices.brain.buttons.pressed():
                 self.save()
@@ -50,3 +52,7 @@ class Calibrar:
             file.write("\n")
             file.write(str(self.minBlue) + "\n")
             file.write(str(self.maxBlue) + "\n")
+            
+if __name__ == "__main__":
+    calibrar = Calibrar()
+    calibrar.run()

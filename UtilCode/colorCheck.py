@@ -32,12 +32,14 @@ class ColorCheck:
         
         if (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[0][0], ColorCheck.mapeamento[0][1], ColorCheck.mapeamento[0][2]]) or color == Color.WHITE):
             return Color.WHITE
-        
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or (red + green + blue) < 15):
+
+        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or (red + green + blue) < 10):
             return Color.BLACK
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN or (green > red + blue) or ((green + blue) > (red * 2)) or ):
+        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN or (green > red + blue) or ColorCheck.checkVerde(red, green, blue)):
             return Color.GREEN
+        
+        
         
         else:
             return None
@@ -48,7 +50,7 @@ class ColorCheck:
     def proximo(value, value2):
         response = False
         
-        if value2 <= value * 1.5 and value2 >= value * 0.5:
+        if value2 <= value * 1.35 and value2 >= value * 0.75:
             response = True
             
         elif value < 8:
