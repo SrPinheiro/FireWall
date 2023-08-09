@@ -8,6 +8,17 @@ from UtilCode.getColors import getJSON
 
 class ColorCheck:
     mapeamento = {}
+    
+    ler = True
+    
+    minRed = 0
+    maxRed = 0
+    
+    minGreen = 0
+    maxGreen = 0
+    
+    minBlue = 0
+    maxBlue = 0
         
     def check(sensor):
         if not ColorCheck.mapeamento:
@@ -25,7 +36,7 @@ class ColorCheck:
         elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or (red + green + blue) < 15):
             return Color.BLACK
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN or (green > red + blue) or ((green + blue) > (red * 2))):
+        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN or (green > red + blue) or ((green + blue) > (red * 2)) or ):
             return Color.GREEN
         
         else:
@@ -45,4 +56,30 @@ class ColorCheck:
                 response = True
         
         return response
+    
+    def checkVerde(red, green, blue):
+        if ColorCheck.ler:
+            with open("green", "r") as file:
+                ColorCheck.minRed = int(file.readline())
+                ColorCheck.maxRed = int(file.readline())
+                file.readline()
+                ColorCheck.minGreen = int(file.readline())
+                ColorCheck.maxGreen = int(file.readline())
+                file.readline()
+                ColorCheck.minBlue = int(file.readline())
+                ColorCheck.maxBlue = int(file.readline())
+            
+            ColorCheck.ler = False
         
+        response = True
+        
+        if ColorCheck.minRed > red > ColorCheck.maxRed:
+            response = False
+            
+        if ColorCheck.minGreen > green > ColorCheck.maxGreen:
+            response = False
+
+        if ColorCheck.minBlue > blue > ColorCheck.maxBlue:
+            response = False
+            
+        return response
