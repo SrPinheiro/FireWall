@@ -25,8 +25,8 @@ class LineFollower:
         # self.brain.light.on(Color.ORANGE)
         # self.brain.screen.draw_text(50, 60, "! FireWall !")
 
-        self.RgreenMap = 0
-        self.LgreenMap = 0
+        self.RGreenMap = 0
+        self.LGreenMap = 0
 
         self.RWhiteMap = 0
         self.LWhiteMap = 0
@@ -63,31 +63,34 @@ class LineFollower:
         self.setState(L, "L")
 
         Devices.brain.screen.clear()
-        Devices.brain.screen.print(self.RgreenMap)
-        Devices.brain.screen.print(self.LgreenMap)
+        Devices.brain.screen.print(self.RGreenMap)
+        Devices.brain.screen.print(self.LGreenMap)
 
         # Controlador de linha direita
         if R == Color.WHITE:
-            if self.RgreenMap >= 3 and self.LgreenMap >= 3:
+            if (
+                self.RGreenMap >= Parametros.greenMap
+                and self.LGreenMap >= Parametros.greenMap
+            ):
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.greenState.run(self.RGreenMap, self.LGreenMap)
 
-            self.RgreenMap = 0
-            self.LgreenMap = 0
+            self.RGreenMap = 0
+            self.LGreenMap = 0
 
             self.Tr = False
 
         elif R == Color.BLACK:
-            if self.RgreenMap >= 3:
+            if self.RGreenMap >= Parametros.greenMap:
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.greenState.run(self.RGreenMap, self.LGreenMap)
             else:
                 self.Tr = True
 
-            if self.RBlackMap >= 3:
-                self.RgreenMap = 0
+            if self.RBlackMap >= Parametros.greenMap:
+                self.RGreenMap = 0
 
             if self.Tl:
                 rm = 90
@@ -96,24 +99,27 @@ class LineFollower:
 
         # Controlador de linha esquerda
         if L == Color.WHITE:
-            if self.RgreenMap >= 3 and self.LgreenMap >= 3:
+            if (
+                self.RGreenMap >= Parametros.greenMap
+                and self.LGreenMap >= Parametros.greenMap
+            ):
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.greenState.run(self.RGreenMap, self.LGreenMap)
 
-            self.RgreenMap = 0
-            self.LgreenMap = 0
+            self.RGreenMap = 0
+            self.LGreenMap = 0
 
             self.Tl = False
 
         elif L == Color.BLACK:
-            if self.LgreenMap >= 3:
+            if self.LGreenMap >= Parametros.greenMap:
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
-                self.greenState.run(self.RgreenMap, self.LgreenMap)
+                self.greenState.run(self.RGreenMap, self.LGreenMap)
 
-            if self.LBlackMap >= 3:
-                self.LgreenMap = 0
+            if self.LBlackMap >= Parametros.greenMap:
+                self.LGreenMap = 0
             if self.Tr:
                 lm = 90
             else:
@@ -161,6 +167,32 @@ class LineFollower:
             else:
                 Devices.motor.drive(Parametros.normalSpeed, 0)
 
+        def obstaculo(self):
+            Devices.motor.stop()
+            LLine = False
+            while Devices.ultraSonic.distance() > 100:
+                Devices.motor.drive(Parametros.normalSpeed * -1, 0)
+
+            Devices.motor.stop()
+            Devices.motor.turn(-60)
+
+            Devices.motor.drive(Parametros.normalSpeed, -60)
+            wait(1000)
+
+            Bl = 0
+            while True:
+                if Bl > 30:
+                    LLine = True
+
+                if Devices.LColorSensor.color() == Color.BLACK:
+                    Bl += 1
+
+                elif Devices.LColorSensor.color() == Color.WHITE and LLine:
+                    break
+
+                elif Devices.LColorSensor.color() == Color.WHITE:
+                    Bl = 0
+
     #
     # Esse metodo serve para detectar quantas vezes uma cor foi vista em sequencia
     # Objetivo: corrigir a margem de erro do sensor de cor
@@ -170,31 +202,31 @@ class LineFollower:
             if sensor == "L":
                 self.LWhiteMap += 1
                 self.LBlackMap = 0
-                # self.LgreenMap = 0
+                # self.LGreenMap = 0
             elif sensor == "R":
                 self.RWhiteMap += 1
                 self.RBlackMap = 0
-                # self.RgreenMap = 0
+                # self.RGreenMap = 0
 
         elif throwler == Color.BLACK:
             if sensor == "L":
                 self.LWhiteMap = 0
                 self.LBlackMap += 1
-                # self.LgreenMap = 0
+                # self.LGreenMap = 0
             elif sensor == "R":
                 self.RWhiteMap = 0
                 self.RBlackMap += 1
-                # self.RgreenMap = 0
+                # self.RGreenMap = 0
 
         elif throwler == Color.GREEN:
             if sensor == "L":
                 self.LWhiteMap = 0
                 self.LBlackMap = 0
-                self.LgreenMap += 1
+                self.LGreenMap += 1
             elif sensor == "R":
                 self.RWhiteMap = 0
                 self.RBlackMap = 0
-                self.RgreenMap += 1
+                self.RGreenMap += 1
 
 
 if __name__ == "__main__":
