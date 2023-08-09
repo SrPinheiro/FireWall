@@ -1,6 +1,6 @@
 class Parametros:
     maxSpeed = 150
-    normalSpeed = 60
+    normalSpeed = 45
     minSpeed = 30
     
     wheel_diameter = 35 #Diametro da roda
@@ -14,3 +14,5 @@ class Parametros:
     
     R90 = -90
     L90 = 90
+    
+    greenMap = 5

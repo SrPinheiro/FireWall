@@ -4,11 +4,12 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import ColorSensor
 from pybricks.parameters import Port, Button, Color
 from pybricks.tools import wait
+from UtilCode.devices import Devices
 
 ev3 = EV3Brick()
 ev3.screen.clear()
 
-Color = ColorSensor(Port.S2)
+Color = Devices.RColorSensor
 
 def saveJSON(json):
     texto = ""
