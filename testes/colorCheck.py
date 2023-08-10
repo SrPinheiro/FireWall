@@ -13,7 +13,7 @@ from getColors import getJSON
 
 class ColorCheck:
     mapeamento = {}
-        
+    
     def check(sensor):
         if not ColorCheck.mapeamento:
             ColorCheck.mapeamento = getJSON()
@@ -24,17 +24,29 @@ class ColorCheck:
         blue = int(RGB[2])
         color = sensor.color()
         
-        if (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[0][0], ColorCheck.mapeamento[0][1], ColorCheck.mapeamento[0][2]]) or color == Color.WHITE):
-            return Color.WHITE
+        return color
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or (red + green + blue) < 15):
-            return Color.BLACK
+    # def check(sensor):
+    #     if not ColorCheck.mapeamento:
+    #         ColorCheck.mapeamento = getJSON()
+            
+    #     RGB = sensor.rgb()
+    #     red = int(RGB[0])
+    #     green = int(RGB[1])
+    #     blue = int(RGB[2])
+    #     color = sensor.color()
         
-        elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN):
-            return Color.GREEN
+    #     if (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[0][0], ColorCheck.mapeamento[0][1], ColorCheck.mapeamento[0][2]]) or color == Color.WHITE):
+    #         return Color.WHITE
         
-        else:
-            return None
+    #     elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[1][0], ColorCheck.mapeamento[1][1], ColorCheck.mapeamento[1][2]]) or (red + green + blue) < 15):
+    #         return Color.BLACK
+        
+    #     elif (ColorCheck.checkProximo([red, green, blue], [ColorCheck.mapeamento[2][0], ColorCheck.mapeamento[2][1], ColorCheck.mapeamento[2][2]]) or color == Color.GREEN):
+    #         return Color.GREEN
+        
+    #     else:
+    #         return None
         
     def checkProximo(data, data2):
         return ColorCheck.proximo(data[0], data2[0]) and ColorCheck.proximo(data[1], data2[1]) and ColorCheck.proximo(data[2], data[2])

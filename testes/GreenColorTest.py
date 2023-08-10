@@ -7,33 +7,28 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from colorCheck import ColorCheck
+from devices import Devices
 
-
-sensorL = ColorSensor(Port.S1)
 ev3 = EV3Brick()
 ev3.speaker.beep()
 
 def rgbCheck():
     # ev3.speaker.beep()
-    color2 = sensorL.rgb()
+    color2 = Devices.RColorSensor.rgb()
     
     ev3.screen.clear()
     ev3.screen.print("R: " + str(color2[0]))
     ev3.screen.print("G: " + str(color2[1]))
     ev3.screen.print("B: " + str(color2[2]))
     wait(500)
-
-def colorCheck():
-    CNAME = ColorCheck.check(sensorL)
-
+    
     ev3.screen.clear()
-    ev3.screen.print(CNAME)
-    ev3.screen.print(sensorL.reflection())
+    ev3.screen.print("C: " + str(Devices.RColorSensor.color()))
+    ev3.screen.print("A: " + str(Devices.RColorSensor.ambient()))
+    ev3.screen.print("R: " + str(Devices.RColorSensor.reflection()))
     wait(500)
     
-
-while True:
-    colorCheck()
-    rgbCheck()
-    
+if __name__ == "__main__":
+    while True:
+        rgbCheck()
     

@@ -11,7 +11,6 @@ from colorCheck import ColorCheck
 
 class teste():
     def __init__(self):
-        Devices.motor.drive(45, 0)
         self.LgreenMap = 0
         self.RgreenMap = 0
         
@@ -21,32 +20,31 @@ class teste():
         self.LBlackMap = 0
         self.RBlackMap = 0
         
+        self.andar = False
+        
         self.run()
-        
-    def turnar(self):
-        Devices.motor.stop()
-        Devices.motor.turn(180)
-        
-        while True:
-            Devices.brain.speaker.beep()
-            wait(500)
+    
         
     def run(self):
         while True:
             cor1 = ColorCheck.check(Devices.RColorSensor)
-            cor2 = ColorCheck.check(Devices.LColorSensor)
+            
+            if Devices.brain.buttons.pressed():
+                self.andar = not self.andar
+                
+            # if andar:
+            #     Devices.motor.drive(30, 0)
+                
+            # else:
+            #     Devices.motor.stop()
             
             self.setState(cor1, "R")
-            self.setState(cor2, "L")
             
-            if cor1 == Color.WHITE or cor2 == Color.WHITE:
-                if(self.LgreenMap >= 5 or self.RgreenMap >= 5):
-                    self.turnar()
+            if self.RBlackMap >= 10:
+                self.RgreenMap = 0
             
             Devices.brain.screen.clear()
             Devices.brain.screen.print(cor1)
-            Devices.brain.screen.print(cor2)
-            Devices.brain.screen.print(self.LgreenMap)
             Devices.brain.screen.print(self.RgreenMap)
         
     def setState(self, throwler, sensor):
@@ -54,11 +52,11 @@ class teste():
             if sensor == "L":
                 self.LWhiteMap += 1
                 self.LBlackMap = 0
-                self.LgreenMap = 0
+                #self.LgreenMap = 0
             elif sensor == "R":
                 self.RWhiteMap += 1
                 self.RBlackMap = 0
-                self.RgreenMap = 0
+                #self.RgreenMap = 0
                 
         elif throwler == Color.BLACK:
             if sensor == "L":
@@ -68,7 +66,7 @@ class teste():
             elif sensor == "R":
                 self.RWhiteMap = 0
                 self.RBlackMap += 1
-                self.RgreenMap = 0
+                #self.RgreenMap = 0
                 
         elif throwler == Color.GREEN:
             if sensor == "L":

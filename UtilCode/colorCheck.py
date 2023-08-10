@@ -19,8 +19,20 @@ class ColorCheck:
     
     minBlue = 0
     maxBlue = 0
-        
+    
     def check(sensor):
+        if not ColorCheck.mapeamento:
+            ColorCheck.mapeamento = getJSON()
+            
+        RGB = sensor.rgb()
+        red = int(RGB[0])
+        green = int(RGB[1])
+        blue = int(RGB[2])
+        color = sensor.color()
+        
+        return color
+        
+    #def check(sensor):
         if not ColorCheck.mapeamento:
             ColorCheck.mapeamento = getJSON()
             

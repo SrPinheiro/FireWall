@@ -15,4 +15,4 @@ class Parametros:
     R90 = -90
     L90 = 90
     
-    greenMap = 5
+    greenMap = 3

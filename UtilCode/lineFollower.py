@@ -36,6 +36,8 @@ class LineFollower:
 
         self.RGpassed = False
         self.LGpassed = False
+        
+        self.ArenaMap = 0
 
         self.Tl = False
         self.Tr = False
@@ -47,8 +49,8 @@ class LineFollower:
             if Devices.ultraSonic.distance() < 50:
                 self.obstaculo()
 
-            if Devices.brain.buttons.pressed():
-                Arena()
+            # if self.ArenaMap > 10:
+            #     Arena()
 
             self.checkLineNew()
 
@@ -61,12 +63,19 @@ class LineFollower:
 
         self.setState(R, "R")
         self.setState(L, "L")
+        
+        corDec = False
 
         Devices.brain.screen.clear()
         Devices.brain.screen.print(self.RGreenMap)
         Devices.brain.screen.print(self.LGreenMap)
 
         # Controlador de linha direita
+        # if R != Color.BLUE or L != Color.BLUE:
+        #     self.ArenaMap = 0
+        # else:
+        #     self.ArenaMap += 1
+            
         if R == Color.WHITE:
             if (
                 self.RGreenMap >= Parametros.greenMap
@@ -75,6 +84,7 @@ class LineFollower:
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
                 self.greenState.run(self.RGreenMap, self.LGreenMap)
+            
 
             self.RGreenMap = 0
             self.LGreenMap = 0
@@ -82,6 +92,7 @@ class LineFollower:
             self.Tr = False
 
         elif R == Color.BLACK:
+            corDec = True
             if self.RGreenMap >= Parametros.greenMap:
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
@@ -91,11 +102,12 @@ class LineFollower:
 
             if self.RBlackMap >= 10:
                 self.RGreenMap = 0
-
-            if self.Tl:
-                rm = 90
-            else:
-                rm = 80
+                
+                if self.Tl:
+                    rm = 80
+                else:
+                    rm = 70
+                    self.Tr = True
 
         # Controlador de linha esquerda
         if L == Color.WHITE:
@@ -113,6 +125,7 @@ class LineFollower:
             self.Tl = False
 
         elif L == Color.BLACK:
+            corDec = True
             if self.LGreenMap >= Parametros.greenMap:
                 Devices.motor.stop()
                 Devices.brain.speaker.beep()
@@ -120,13 +133,15 @@ class LineFollower:
 
             if self.LBlackMap >= 10:
                 self.LGreenMap = 0
-            if self.Tr:
-                lm = 90
-            else:
-                lm = 80
-                self.Tl = True
-
-        Devices.motor.drive(Parametros.normalSpeed, lm - rm)
+                
+                if self.Tr:
+                    lm = 80
+                else:
+                    lm = 70
+                    self.Tl = True
+        speed = Parametros.normalSpeed
+            
+        Devices.motor.drive(speed, lm - rm)
 
     def passObstacle(self):
         Devices.motor.stop()
@@ -190,7 +205,7 @@ class LineFollower:
 
             elif Devices.LColorSensor.color() == Color.WHITE and LLine:
                 Devices.motor.stop()
-                Devices.motor.turn(10)
+                Devices.motor.turn(50)
                 break
 
             elif Devices.LColorSensor.color() == Color.WHITE:
